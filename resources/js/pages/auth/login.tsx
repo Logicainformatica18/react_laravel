@@ -46,7 +46,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     <img src="../../ayba/1.png" alt="Logo" className="w-32" />
                 </div>
 
-                <h2 className="text-center text-xl font-bold mb-4">Iniciar Sesión</h2>
+                <h2 className="text-center text-xl font-bold mb-4 text-black">Iniciar Sesión</h2>
 
                 <form className="space-y-6" onSubmit={submit}>
                     <div>
@@ -85,12 +85,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             checked={data.remember}
                             onClick={() => setData('remember', !data.remember)}
                         />
-                        <Label htmlFor="remember">Recordarme</Label>
+                        <Label htmlFor="remember" className='text-black'>Recordarme</Label>
                     </div>
 
                     <div className="flex items-center justify-between">
                         {canResetPassword && (
-                            <TextLink href={route('password.request')} className="text-sm text-primary">
+                            <TextLink href={route('password.request')} className="text-sm text-secondary">
                                 ¿Olvidaste tu contraseña?
                             </TextLink>
                         )}
@@ -108,7 +108,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                 <div className="text-center text-sm text-gray-500 mt-6">
                     ¿No tienes cuenta?{' '}
-                    <TextLink href={route('register')}>
+                    <TextLink href={route('register')} className='text-[#F6A42C] font-semibold'>
                         Regístrate
                     </TextLink>
                 </div>

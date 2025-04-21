@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->text('details')->nullable(); // se recomienda plural si es más largo
-            $table->string('sender_email')->nullable();
-            $table->string('receiver_email')->nullable();
+            $table->integer('quanty')->default(0);
+            $table->decimal('price',8,2)->default(0);
             $table->string('file_1')->nullable();
             $table->string('file_2')->nullable();
             $table->string('file_3')->nullable();
