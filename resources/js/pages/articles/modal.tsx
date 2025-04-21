@@ -125,23 +125,37 @@ export default function ArticleModal({
         <DialogHeader>
           <DialogTitle>{articleToEdit ? 'Editar Artículo' : 'Nuevo Artículo'}</DialogTitle>
         </DialogHeader>
-
+  
         <div className="grid gap-4 py-4">
           {['title', 'description', 'details', 'quanty', 'price'].map((field) => (
             <div key={field} className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor={field} className="text-right capitalize">
                 {field.replace('_', ' ')}
               </Label>
-              <Input
-                id={field}
-                name={field}
-                value={(formData as any)[field]}
-                onChange={handleChange}
-                className="col-span-3"
-              />
+  
+              {field === 'details' ? (
+                <textarea
+                  id={field}
+                  name={field}
+                  value={(formData as any)[field]}
+                  onChange={handleChange}
+                  className="col-span-3 border rounded px-3 py-2 text-sm"
+                  rows={3}
+                />
+              ) : (
+                <Input
+                  type={field === 'quanty' || field === 'price' ? 'number' : 'text'}
+                  id={field}
+                  name={field}
+                  value={(formData as any)[field]}
+                  onChange={handleChange}
+                  min={field === 'quanty' || field === 'price' ? 0 : undefined}
+                  className="col-span-3"
+                />
+              )}
             </div>
           ))}
-
+  
           {[1, 2, 3, 4].map(num => {
             const field = `file_${num}`;
             const file = files[field];
@@ -149,7 +163,7 @@ export default function ArticleModal({
             const fileSizeKB = file ? file.size / 1024 : 0;
             const fileSizeText = file ? `${fileSizeKB.toFixed(1)} KB` : null;
             const sizeColor = fileSizeKB > 2000 ? 'text-red-600' : 'text-blue-600';
-
+  
             return (
               <div key={field} className="grid grid-cols-4 items-start gap-4">
                 <Label htmlFor={field} className="text-right mt-2">Archivo {num}</Label>
@@ -173,11 +187,12 @@ export default function ArticleModal({
               </div>
             );
           })}
+  
           <span className="text-xs text-right block text-gray-600">
             Los archivos deben de ser menores a 2000 KB
           </span>
         </div>
-
+  
         <DialogFooter className="flex justify-between">
           <div className="flex gap-2">
             <Button variant="outline" onClick={handleReset}>Nuevo</Button>
@@ -190,4 +205,5 @@ export default function ArticleModal({
       </DialogContent>
     </Dialog>
   );
+  
 }

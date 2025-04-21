@@ -21,8 +21,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/articles', [ArticleController::class, 'store'])->middleware(['auth', 'verified']);
     Route::get('/articles', [ArticleController::class, 'index'])->middleware(['auth', 'verified'])->name('articles.index');
     Route::delete('/articles/{id}', [ArticleController::class, 'destroy']);
- 
     Route::put('/articles/{id}', [ArticleController::class, 'update']);
+    Route::get('/articles/{id}', [ArticleController::class, 'show']);
 
 });
 

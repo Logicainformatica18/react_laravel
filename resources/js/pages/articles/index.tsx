@@ -45,6 +45,12 @@ export default function Articles() {
     setEditArticle(null);
   };
 
+  const fetchArticle = async (id: number) => {
+    const res = await axios.get(`/articles/${id}`); // 👈 AQUÍ se llama a ArticleController@show
+    setEditArticle(res.data.article);              // 👈 Pasa el artículo al modal
+    setShowModal(true);                            // 👈 Abre el modal
+  };
+  
   const fetchPage = async (url: string) => {
     try {
       const res = await axios.get(url);
@@ -79,7 +85,7 @@ export default function Articles() {
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">ID</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Título</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Descripción</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Detalles</th>
+     
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Cantidad</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Precio</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Archivo 1</th>
@@ -92,15 +98,8 @@ export default function Articles() {
               {articles.map((article) => (
                 <tr key={article.id} className="border-t hover:bg-gray-50">
                   <td className="px-4 py-2 text-sm text-gray-700 space-x-2">
-                    <button
-                      onClick={() => {
-                        setEditArticle(article);
-                        setShowModal(true);
-                      }}
-                      className="text-blue-600 hover:underline"
-                    >
-                      Editar
-                    </button>
+                  <button onClick={() => fetchArticle(article.id)} className=' text-blue-600'>Editar</button>
+
                     <button
                       onClick={async () => {
                         if (confirm(`¿Eliminar artículo "${article.title}"?`)) {
@@ -121,7 +120,7 @@ export default function Articles() {
                   <td className="px-4 py-2 text-sm text-gray-700">{article.id}</td>
                   <td className="px-4 py-2 text-sm text-gray-700">{article.title}</td>
                   <td className="px-4 py-2 text-sm text-gray-700">{article.description}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700">{article.details}</td>
+              
                   <td className="px-4 py-2 text-sm text-gray-700">{article.quanty}</td>
                   <td className="px-4 py-2 text-sm text-gray-700">{article.price}</td>
                   {[article.file_1, article.file_2, article.file_3, article.file_4].map((file, i) => (

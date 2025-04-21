@@ -79,16 +79,26 @@ class ArticleController extends Controller
     
         foreach (['file_1', 'file_2', 'file_3', 'file_4'] as $field) {
             if ($request->hasFile($field)) {
-                $article->$field = fileUpdate($article->$field, 'uploads'); // ✅ usa tu función
+                $article->$field = fileUpdate(
+                    $request->file($field),  // 👈 nuevo archivo (UploadedFile)
+                    'uploads',
+                    $article->$field         // 👈 archivo anterior (string)
+                );
             }
         }
+        
     
         $article->save();
     
         return response()->json(['article' => $article], 200);
     }
     
-    
+    public function show($id)
+{
+    $article = Article::findOrFail($id);
+    return response()->json(['article' => $article]);
+}
+
     public function destroy($id)
     {
         Article::findOrFail($id)->delete();
