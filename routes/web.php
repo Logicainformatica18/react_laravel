@@ -23,7 +23,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/articles/{id}', [ArticleController::class, 'destroy']);
     Route::put('/articles/{id}', [ArticleController::class, 'update']);
     Route::get('/articles/{id}', [ArticleController::class, 'show']);
-
+    Route::post('/articles/bulk-delete', [ArticleController::class, 'bulkDelete']);
+    Route::get('/articles/export/excel', [ArticleController::class, 'exportExcel']);
 });
 
 

@@ -17,7 +17,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->longText('details')->nullable(); // se recomienda plural si es más largo
             $table->integer('quanty')->default(0);
-            $table->decimal('price',8,2)->default(0);
+            $table->decimal('price', 10, 2)->default(0);
+
             $table->string('file_1')->nullable();
             $table->string('file_2')->nullable();
             $table->string('file_3')->nullable();

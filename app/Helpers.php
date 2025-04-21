@@ -25,13 +25,14 @@ function fileStore($photo, $directory)
         return    $imageName;
     }
 }
-function fileUpdate($photo, $directory)
+function fileUpdate($newFile, $directory, $oldFile = null)
 {
-    fileDestroy($photo, $directory);
-    return fileStore($photo, $directory);
-
-
+    if ($oldFile) {
+        fileDestroy($oldFile, $directory);  
+    }
+    return fileStore($newFile, $directory); 
 }
+
 function fileDestroy($photo, $directory)
 {
     try {

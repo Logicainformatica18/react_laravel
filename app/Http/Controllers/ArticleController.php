@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ArticlesExport;
 class ArticleController extends Controller
 {
 
@@ -30,7 +31,8 @@ class ArticleController extends Controller
             'description' => 'nullable|string',
             'details' => 'nullable|string',
             'quanty' => 'nullable|integer|min:0',
-            'price' => 'nullable|integer|min:0',
+           'price' => 'nullable|numeric|min:0',
+
             'file_1' => 'nullable|file|max:2048',
             'file_2' => 'nullable|file|max:2048',
             'file_3' => 'nullable|file|max:2048',
@@ -67,7 +69,9 @@ class ArticleController extends Controller
             'description' => 'nullable|string',
             'details' => 'nullable|string',
             'quanty' => 'nullable|integer|min:0',
-            'price' => 'nullable|numeric|min:0',
+         'price' => 'nullable|numeric|min:0',
+
+
             'file_1' => 'nullable|file|max:2048',
             'file_2' => 'nullable|file|max:2048',
             'file_3' => 'nullable|file|max:2048',
@@ -104,5 +108,15 @@ class ArticleController extends Controller
         Article::findOrFail($id)->delete();
         return response()->json(['success' => true]);
     }
-    
+    public function bulkDelete(Request $request)
+{
+    $ids = $request->input('ids', []);
+    Article::whereIn('id', $ids)->delete();
+
+    return response()->json(['message' => 'Eliminados correctamente']);
+}
+public function exportExcel()
+{
+    return Excel::download(new ArticlesExport, 'articulos.xlsx');
+}
 }
