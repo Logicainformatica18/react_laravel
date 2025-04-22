@@ -57,7 +57,23 @@ class TransferController extends Controller
             'transfer' => $transfer,
         ]);
     }
-
+    public function articles($id)
+    {
+        $transfer = Transfer::with('articles')->findOrFail($id);
+    
+        return Inertia::render('articles/index', [
+            'articles' => [
+                'data' => $transfer->articles,
+                'current_page' => 1,
+                'last_page' => 1,
+                'next_page_url' => null,
+                'prev_page_url' => null,
+            ],
+            'transfer_id' => $transfer->id,
+        ]);
+    }
+    
+    
     public function update(Request $request, $id)
     {
         $request->validate([

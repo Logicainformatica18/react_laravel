@@ -17,11 +17,7 @@ const mainNavItems: NavItem[] = [
         href: '/transfers',
         icon: Folder, // Puedes cambiar esto por otro ícono si deseas
     },
-    {
-        title: 'Artículos',
-        href: '/articles',
-        icon: Folder, // Puedes cambiar esto por otro ícono si deseas
-    },
+    
 
 ];
 

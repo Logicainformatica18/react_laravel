@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/articles/export/excel', [ArticleController::class, 'exportExcel']);
 
 
+    Route::get('/transfers/{id}/articles', [TransferController::class, 'articles'])->name('transfers.articles');
 
 
 

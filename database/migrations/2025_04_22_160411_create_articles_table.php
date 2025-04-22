@@ -18,7 +18,8 @@ return new class extends Migration
             $table->longText('details')->nullable(); // se recomienda plural si es más largo
             $table->integer('quanty')->default(0);
             $table->decimal('price', 10, 2)->default(0);
-
+            $table->bigInteger('transfer_id')->unsigned();
+            $table->foreign('transfer_id')->references('id')->on('transfers')->onDelete('cascade');
             $table->string('file_1')->nullable();
             $table->string('file_2')->nullable();
             $table->string('file_3')->nullable();

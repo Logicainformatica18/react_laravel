@@ -13,6 +13,7 @@ class ArticleFactory extends Factory
             'description' => $this->faker->paragraph(),
             'details' => $this->faker->paragraphs(2, true),
             'quanty' => $this->faker->numberBetween(0, 100),
+            'transfer_id' => 1,
             'price' => $this->faker->randomFloat(2, 0, 1000),
             'file_1' => $this->faker->image('public/uploads', 640, 480, null, false),
             'file_2' => $this->faker->image('public/uploads', 640, 480, null, false),

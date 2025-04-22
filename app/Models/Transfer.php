@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Article;
 class Transfer extends Model
 {
     use HasFactory;
@@ -20,5 +20,9 @@ class Transfer extends Model
         'receiver_email',
         'file_1',
     ];
+    public function articles()
+    {
+        return $this->hasMany(Article::class);
+    }
 
 }

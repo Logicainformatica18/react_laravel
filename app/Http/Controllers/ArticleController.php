@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ArticlesExport;
+use Illuminate\Support\Facades\Log;
 class ArticleController extends Controller
 {
 
@@ -46,6 +47,7 @@ class ArticleController extends Controller
         $article->details = $request->details;
         $article->quanty = $request->quanty;
         $article->price = $request->price;
+        $article->transfer_id = $request->transfer_id;
 
         $directory = 'uploads';
 
@@ -62,6 +64,8 @@ class ArticleController extends Controller
                 'article' => $article,
             ]);
     }
+  
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -69,9 +73,7 @@ class ArticleController extends Controller
             'description' => 'nullable|string',
             'details' => 'nullable|string',
             'quanty' => 'nullable|integer|min:0',
-         'price' => 'nullable|numeric|min:0',
-
-
+            'price' => 'nullable|numeric|min:0',
             'file_1' => 'nullable|file|max:2048',
             'file_2' => 'nullable|file|max:2048',
             'file_3' => 'nullable|file|max:2048',
@@ -83,19 +85,29 @@ class ArticleController extends Controller
     
         foreach (['file_1', 'file_2', 'file_3', 'file_4'] as $field) {
             if ($request->hasFile($field)) {
+                Log::debug("📂 Procesando {$field}", [
+                    'originalName' => $request->file($field)->getClientOriginalName(),
+                    'size' => $request->file($field)->getSize(),
+                    'type' => $request->file($field)->getMimeType(),
+                ]);
+    
                 $article->$field = fileUpdate(
-                    $request->file($field),  // 👈 nuevo archivo (UploadedFile)
+                    $request->file($field),
                     'uploads',
-                    $article->$field         // 👈 archivo anterior (string)
+                    $article->$field
                 );
+            } else {
+                Log::debug("⚠️ No se recibió {$field}");
             }
         }
-        
     
         $article->save();
     
+        Log::info("✅ Artículo actualizado", ['id' => $article->id]);
+    
         return response()->json(['article' => $article], 200);
     }
+    
     
     public function show($id)
 {

@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        //\App\Models\User::factory(1)->create(); // si quieres usuarios
+        $this->call([
+            TransferSeeder::class,
+        ]);
     $this->call(ArticleSeeder::class);
     }
 }
