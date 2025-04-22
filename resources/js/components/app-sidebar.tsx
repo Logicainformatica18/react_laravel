@@ -12,12 +12,17 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutGrid,
+    },{
+        title: 'Transferencias',
+        href: '/transfers',
+        icon: Folder, // Puedes cambiar esto por otro ícono si deseas
     },
     {
         title: 'Artículos',
         href: '/articles',
         icon: Folder, // Puedes cambiar esto por otro ícono si deseas
     },
+
 ];
 
 const footerNavItems: NavItem[] = [
@@ -45,7 +50,7 @@ export function AppSidebar() {
                             </Link>
                         </SidebarMenuButton>
 
-                        
+
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
