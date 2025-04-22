@@ -6,6 +6,8 @@ import TransferModal from './modal';
 import axios from 'axios';
 import { Paintbrush, Trash2 } from 'lucide-react';
 import { router } from '@inertiajs/react'; // al inicio del archivo
+
+
 const breadcrumbs: BreadcrumbItem[] = [
 { title: 'Transfers', href: '/transfers' },
 ];
@@ -97,11 +99,11 @@ type Pagination<T> = {
                             </button>
                             )}
 
-                            <a href="/transfers/export/excel"
+                            {/* <a href="/transfers/export/excel"
                                 className="px-4 ml-2 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
                                 target="_blank">
                                 Exportar a Excel
-                            </a>
+                            </a> */}
 
                             <div className="overflow-x-auto mt-4">
                                 <table className="min-w-full divide-y divide-gray-200 bg-white shadow-md rounded">

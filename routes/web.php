@@ -25,8 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/articles/{id}', [ArticleController::class, 'update']);
     Route::get('/articles/{id}', [ArticleController::class, 'show']);
     Route::post('/articles/bulk-delete', [ArticleController::class, 'bulkDelete']);
-    Route::get('/articles/export/excel', [ArticleController::class, 'exportExcel']);
-
+    Route::get('/articles/{id}/export-excel', [ArticleController::class, 'exportExcel']);
 
     Route::get('/transfers/{id}/articles', [TransferController::class, 'articles'])->name('transfers.articles');
 
@@ -39,7 +38,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/transfers/{id}', [TransferController::class, 'update']);
     Route::get('/transfers/{id}', [TransferController::class, 'show']);
     Route::post('/transfers/bulk-delete', [TransferController::class, 'bulkDelete']);
-    Route::get('/transfers/export/excel', [TransferController::class, 'exportExcel']);
+
+
+ //   Route::get('/transfers/export/excel', [TransferController::class, 'exportExcel']);
+    Route::post('/transfers/{id}/notify', [TransferController::class, 'notify']);
 
 
 

@@ -37,7 +37,7 @@ export default function Articles() {
         articles?: Pagination<Article>;
         transfer_id?: number;
       }>().props;
-      
+
       const [articles, setArticles] = useState<Article[]>(initialPagination?.data || []);
       const [pagination, setPagination] = useState(initialPagination || {
         data: [],
@@ -46,7 +46,7 @@ export default function Articles() {
         next_page_url: null,
         prev_page_url: null
       });
-      
+
 
 //   const [articles, setArticles] = useState<Article[]>(initialPagination.data);
 //   const [pagination, setPagination] = useState(initialPagination);
@@ -116,13 +116,11 @@ export default function Articles() {
           </button>
         )}
 
-        <a
-          href="/articles/export/excel"
-          className="px-4 ml-2 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-          target="_blank"
-        >
-          Exportar a Excel
-        </a>
+<a href={`/articles/${transfer_id}/export-excel`}
+                                className="px-4 ml-2 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                                target="_blank">
+                                Exportar a Excel
+                            </a>
 
         <div className="overflow-x-auto mt-4">
           <table className="min-w-full divide-y divide-gray-200 bg-white shadow-md rounded">

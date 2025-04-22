@@ -7,7 +7,8 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TransfersExport;
-
+use App\Mail\TransferNotification;
+use Illuminate\Support\Facades\Mail;
 class TransferController extends Controller
 {
     public function index()
@@ -60,7 +61,7 @@ class TransferController extends Controller
     public function articles($id)
     {
         $transfer = Transfer::with('articles')->findOrFail($id);
-    
+
         return Inertia::render('articles/index', [
             'articles' => [
                 'data' => $transfer->articles,
@@ -72,8 +73,8 @@ class TransferController extends Controller
             'transfer_id' => $transfer->id,
         ]);
     }
-    
-    
+
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -131,4 +132,17 @@ class TransferController extends Controller
     {
         return Excel::download(new TransfersExport, 'transfers.xlsx');
     }
+
+
+    public function notify($id)
+    {
+        $transfer = Transfer::findOrFail($id);
+
+        // Aquí envías el correo
+        Mail::to($transfer->receiver_email)->send(new TransferNotification($transfer));
+
+        return response()->json(['message' => 'Correo enviado correctamente']);
+    }
+
+
 }
