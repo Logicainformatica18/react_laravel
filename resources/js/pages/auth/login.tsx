@@ -48,7 +48,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                 <h2 className="text-center text-xl font-bold mb-4 text-black">Iniciar Sesión</h2>
 
-                <form className="space-y-6" onSubmit={submit}>
+                <form className="space-y-6 text-[#000]" onSubmit={submit}>
                     <div>
                         <Label htmlFor="email">Email</Label>
                         <Input
@@ -85,12 +85,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             checked={data.remember}
                             onClick={() => setData('remember', !data.remember)}
                         />
-                        <Label htmlFor="remember" className='text-black'>Recordarme</Label>
+                        <Label htmlFor="remember" className="text-sm text-[#000] hover:text-[#F6A42C]">Recordarme</Label>
                     </div>
 
                     <div className="flex items-center justify-between">
                         {canResetPassword && (
-                            <TextLink href={route('password.request')} className="text-sm text-secondary">
+                            <TextLink href={route('password.request')} className="text-sm text-[#000] hover:text-[#F6A42C]">
                                 ¿Olvidaste tu contraseña?
                             </TextLink>
                         )}

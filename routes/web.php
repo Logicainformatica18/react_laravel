@@ -1,6 +1,6 @@
 <?php
     use App\Http\Controllers\TransferController;
-
+    use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ArticleController;
@@ -14,6 +14,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
+
+
+    Route::get('/users/fetch', [UserController::class, 'fetchPaginated'])->name('users.fetch');
+    Route::post('/users', [UserController::class, 'store'])->middleware(['auth', 'verified']);
+    Route::get('/users', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('users.index');
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::put('/users/{id}/sync-roles', [UserController::class, 'syncRoles']);
 
 
 
@@ -52,3 +61,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
+
+/*
+agregar modulos products
+agregar modulo usuarios
+
+en el formulario de articulos que busque el producto y usuario tipo receptor
+
+*/

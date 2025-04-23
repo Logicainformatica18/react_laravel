@@ -31,7 +31,7 @@ export default function ArticleModal({
     description: '',
     details: '',
     quanty: 0,
-    price: 0,
+    // price: 0,
     code: '',
     condition: '',
     state: '',
@@ -61,7 +61,7 @@ export default function ArticleModal({
         description: articleToEdit.description || '',
         details: articleToEdit.details || '',
         quanty: articleToEdit.quanty || 0,
-        price: articleToEdit.price || 0,
+        // price: articleToEdit.price || 0,
         code: articleToEdit.code || '',
         condition: articleToEdit.condition || '',
         state: articleToEdit.state || '',
@@ -144,7 +144,7 @@ export default function ArticleModal({
       description: '',
       details: '',
       quanty: 0,
-      price: 0.0,
+    //   price: 0.0,
       code: '',
       condition: '',
       state: '',
@@ -176,8 +176,8 @@ export default function ArticleModal({
               <div className="col-span-3 text-sm text-gray-700">{transfer_id}</div>
             </div>
           )}
-
-          {['title', 'description', 'details', 'quanty', 'price', 'code', 'condition'].map((field) => (
+{/* 'price', */}
+          {['title', 'description', 'details', 'quanty',  'code', 'condition'].map((field) => (
             <div key={field} className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor={field} className="text-right capitalize">{field.replace('_', ' ')}</Label>
               {field === 'details' ? (
@@ -190,8 +190,9 @@ export default function ArticleModal({
                   rows={3}
                 />
               ) : (
+                // || field === 'price'
                 <Input
-                  type={field === 'quanty' || field === 'price' ? 'number' : 'text'}
+                  type={field === 'quanty'  ? 'number' : 'text'}
                   id={field}
                   name={field}
                   value={(formData as any)[field]}

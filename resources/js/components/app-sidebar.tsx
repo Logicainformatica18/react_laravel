@@ -16,8 +16,12 @@ const mainNavItems: NavItem[] = [
         title: 'Transferencias',
         href: '/transfers',
         icon: Folder, // Puedes cambiar esto por otro ícono si deseas
+    },{
+        title: 'Usuarios',
+        href: '/users',
+        icon: Folder, // Puedes cambiar esto por otro ícono si deseas
     },
-    
+
 
 ];
 

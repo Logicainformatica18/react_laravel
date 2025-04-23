@@ -109,118 +109,108 @@ export default function Transfers() {
                             </a> */}
 
                 <div className="overflow-x-auto mt-4">
-                    <table className="min-w-full divide-y divide-gray-200 bg-white shadow-md rounded">
-                        <thead className="bg-gray-100">
-                            <tr>
-                                <th className="px-4 py-2">
-                                    <input type="checkbox" checked={selectedIds.length === transfers.length}
-                                        onChange={(e) => {
-                                            setSelectedIds(e.target.checked ? transfers.map((a) => a.id) : []);
-                                        }}
-                                    />
-                                </th>
-                                <th className="px-4 py-2">Acciones</th>
-                                <th className="px-4 py-2">Artículos</th>
-                                <th className="px-4 py-2">ID</th>
-                                <th className="px-4 py-2">Descripción</th>
-                                <th className="px-4 py-2">Detalles</th>
-                                <th className="px-4 py-2">Emisor Email</th>
-                                <th className="px-4 py-2">Emisor Nombres</th>
-                                <th className="px-4 py-2">Receptor Email</th>
-                                <th className="px-4 py-2">Receptor Nombres</th>
-                                <th className="px-4 py-2">Archivo</th>
-                                <th className="px-4 py-2">Fecha de Recepción</th>
-                                <th className="px-4 py-2">¿Confirmado?</th>
+                <table className="min-w-full divide-y divide-gray-200 bg-white dark:bg-black shadow-md rounded">
+    <thead className="bg-gray-100 dark:bg-gray-800">
+        <tr>
+            <th className="px-4 py-2 text-black dark:text-dark">
+                <input type="checkbox" checked={selectedIds.length === transfers.length}
+                    onChange={(e) => {
+                        setSelectedIds(e.target.checked ? transfers.map((a) => a.id) : []);
+                    }}
+                />
+            </th>
+            <th className="px-4 py-2 text-black dark:text-white">Acciones</th>
+            <th className="px-4 py-2 text-black dark:text-white">Artículos</th>
+            <th className="px-4 py-2 text-black dark:text-white">ID</th>
+            <th className="px-4 py-2 text-black dark:text-white">Descripción</th>
+            <th className="px-4 py-2 text-black dark:text-white">Detalles</th>
+            <th className="px-4 py-2 text-black dark:text-white">Emisor Email</th>
+            <th className="px-4 py-2 text-black dark:text-white">Emisor Nombres</th>
+            <th className="px-4 py-2 text-black dark:text-white">Receptor Email</th>
+            <th className="px-4 py-2 text-black dark:text-white">Receptor Nombres</th>
+            <th className="px-4 py-2 text-black dark:text-white">Archivo</th>
+            <th className="px-4 py-2 text-black dark:text-white">Fecha de Recepción</th>
+            <th className="px-4 py-2 text-black dark:text-white">¿Confirmado?</th>
+        </tr>
+    </thead>
+    <tbody>
+        {transfers.map((transfer) => (
+            <tr key={transfer.id} className="border-t hover:bg-gray-50 dark:hover:bg-gray-700 text-black dark:text-white">
+                <td className="px-4 py-2">
+                    <input type="checkbox" checked={selectedIds.includes(transfer.id)}
+                        onChange={(e) => {
+                            setSelectedIds((prev) =>
+                                e.target.checked
+                                    ? [...prev, transfer.id]
+                                    : prev.filter((id) => id !== transfer.id)
+                            );
+                        }}
+                    />
+                </td>
+                <td className="px-4 py-2 text-sm space-x-2">
+                    <button onClick={() => fetchTransfer(transfer.id)}
+                        className="flex items-center gap-1 text-blue-600 hover:underline dark:text-blue-400"
+                    >
+                        <Paintbrush className="w-4 h-4" />
+                        Editar
+                    </button>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {transfers.map((transfer) => (
-                                <tr key={transfer.id} className="border-t hover:bg-gray-50">
-                                    <td className="px-4 py-2">
-                                        <input type="checkbox" checked={selectedIds.includes(transfer.id)}
-                                            onChange={(e) => {
-                                                setSelectedIds((prev) =>
-                                                    e.target.checked
-                                                        ? [...prev, transfer.id]
-                                                        : prev.filter((id) => id !== transfer.id)
-                                                );
-                                            }}
-                                        />
-                                    </td>
-                                    <td className="px-4 py-2 text-sm text-gray-700 space-x-2">
-                                        <button onClick={() => fetchTransfer(transfer.id)}
-                                            className="flex items-center gap-1 text-blue-600 hover:underline"
-                                        >
-                                            <Paintbrush className="w-4 h-4" />
-                                            Editar
-                                        </button>
+                    <button onClick={async () => {
+                        if (confirm(`¿Eliminar transfer ID ${transfer.id}?`)) {
+                            try {
+                                await axios.delete(`/transfers/${transfer.id}`);
+                                setTransfers((prev) => prev.filter((a) => a.id !== transfer.id));
+                            } catch (e) {
+                                alert('Error al eliminar');
+                                console.error(e);
+                            }
+                        }
+                    }}
+                        className="flex items-center gap-1 text-red-600 hover:underline dark:text-red-400"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                        Eliminar
+                    </button>
+                </td>
+                <td className="px-4 py-2">
+                    <button onClick={() =>
+                        router.visit(`/transfers/${transfer.id}/articles`)}
 
-                                        <button onClick={async () => {
-                                            if (confirm(`¿Eliminar transfer ID ${transfer.id}?`)) {
-                                                try {
-                                                    await axios.delete(`/transfers/${transfer.id}`);
-                                                    setTransfers((prev) => prev.filter((a) => a.id !== transfer.id));
-                                                } catch (e) {
-                                                    alert('Error al eliminar');
-                                                    console.error(e);
-                                                }
-                                            }
-                                        }}
-                                            className="flex items-center gap-1 text-red-600 hover:underline"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                            Eliminar
-                                        </button>
-                                    </td>
-                                    <td className="px-4 py-2">
-                                        <button onClick={() =>
-                                            router.visit(`/transfers/${transfer.id}/articles`)}
+                        className="text-sm text-indigo-600 hover:underline dark:text-indigo-400"
+                    >
+                        Ver artículos
+                    </button>
+                </td>
+                <td className="px-4 py-2">{transfer.id}</td>
+                <td className="px-4 py-2">{transfer.description}</td>
+                <td className="px-4 py-2">{transfer.details}</td>
+                <td className="px-4 py-2">{transfer.sender_firstname}{transfer.sender_lastname}</td>
+                <td className="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">{transfer.sender_email}</td>
+                <td className="px-4 py-2">{transfer.receiver_firstname}{transfer.receiver_lastname}</td>
+                <td className="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">{transfer.receiver_email}</td>
+                <td className="px-4 py-2">
+                    {transfer.file_1 && (
+                        <a href={`../../uploads/${transfer.file_1}`} download
+                            className="text-blue-600 underline dark:text-blue-400">
+                            {transfer.file_1}
+                        </a>
+                    )}
+                </td>
+                <td className="px-4 py-2">
+                    {transfer.received_at ? new Date(transfer.received_at).toLocaleString() : '-'}
+                </td>
+                <td className="px-4 py-2">
+                    {transfer.confirmed_at ? (
+                        <span className="text-green-600 font-semibold dark:text-green-400">✅ Confirmado</span>
+                    ) : (
+                        <span className="text-red-500 dark:text-red-400">❌ Sin confirmar</span>
+                    )}
+                </td>
+            </tr>
+        ))}
+    </tbody>
+</table>
 
-                                            className="text-sm text-indigo-600 hover:underline"
-                                        >
-                                            Ver artículos
-                                        </button>
-                                    </td>
-
-                                    <td className="px-4 py-2">{transfer.id}</td>
-                                    <td className="px-4 py-2">{transfer.description}</td>
-                                    <td className="px-4 py-2">{transfer.details}</td>
-                                    <td className="px-4 py-2">{transfer.sender_firstname}
-                                        {transfer.sender_lastname}</td>
-                                    <td className="px-4 py-2">
-
-                                        <span className="text-sm text-gray-600">{transfer.sender_email}</span>
-                                    </td>
-                                    <td className="px-4 py-2">{transfer.receiver_firstname}
-                                        {transfer.receiver_lastname}</td>
-                                    <td className="px-4 py-2">
-
-                                        <span className="text-sm text-gray-600">{transfer.receiver_email}</span>
-                                    </td>
-                                    <td className="px-4 py-2">
-                                        {transfer.file_1 && (
-                                            <a href={`../../uploads/${transfer.file_1}`} download
-                                                className="text-blue-600 underline">
-                                                {transfer.file_1}
-                                            </a>
-                                        )}
-                                    </td>
-                                    <td className="px-4 py-2">
-                                        {transfer.received_at ? new Date(transfer.received_at).toLocaleString() : '-'}
-                                    </td>
-                                    <td className="px-4 py-2">
-                                        {transfer.confirmed_at ? (
-                                            <span className="text-green-600 font-semibold">✅ Confirmado</span>
-                                        ) : (
-                                            <span className="text-red-500">❌ Sin confirmar</span>
-                                        )}
-                                    </td>
-
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
                 </div>
 
                 <div className="flex justify-center mt-6 space-x-2">

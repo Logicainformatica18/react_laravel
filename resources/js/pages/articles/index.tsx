@@ -127,102 +127,101 @@ export default function Articles() {
                             </a>
 
         <div className="overflow-x-auto mt-4">
-          <table className="min-w-full divide-y divide-gray-200 bg-white shadow-md rounded">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.length === articles.length}
-                    onChange={(e) =>
-                      setSelectedIds(e.target.checked ? articles.map((a) => a.id) : [])
-                    }
-                  />
-                </th>
-                <th className="px-4 py-2">Acciones</th>
-                <th className="px-4 py-2">ID</th>
-                <th className="px-4 py-2">Título</th>
-                <th className="px-4 py-2">Descripción</th>
-                <th className="px-4 py-2">Cantidad</th>
-                <th className="px-4 py-2">Precio</th>
-                <th className="px-4 py-2">Código</th>
-<th className="px-4 py-2">Condición</th>
-<th className="px-4 py-2">Estado</th>
+        <table className="min-w-full divide-y divide-gray-200 bg-white dark:bg-black shadow-md rounded">
+  <thead className="bg-gray-100 dark:bg-gray-800">
+    <tr>
+      <th className="px-4 py-2 text-black dark:text-white">
+        <input
+          type="checkbox"
+          checked={selectedIds.length === articles.length}
+          onChange={(e) =>
+            setSelectedIds(e.target.checked ? articles.map((a) => a.id) : [])
+          }
+        />
+      </th>
+      <th className="px-4 py-2 text-black dark:text-white">Acciones</th>
+      <th className="px-4 py-2 text-black dark:text-white">ID</th>
+      <th className="px-4 py-2 text-black dark:text-white">Título</th>
+      <th className="px-4 py-2 text-black dark:text-white">Descripción</th>
+      <th className="px-4 py-2 text-black dark:text-white">Cantidad</th>
+      {/* <th className="px-4 py-2 text-black dark:text-white">Precio</th> */}
+      <th className="px-4 py-2 text-black dark:text-white">Código</th>
+      <th className="px-4 py-2 text-black dark:text-white">Condición</th>
+      <th className="px-4 py-2 text-black dark:text-white">Estado</th>
+      <th className="px-4 py-2 text-black dark:text-white">Archivo 1</th>
+      <th className="px-4 py-2 text-black dark:text-white">Archivo 2</th>
+      <th className="px-4 py-2 text-black dark:text-white">Archivo 3</th>
+      <th className="px-4 py-2 text-black dark:text-white">Archivo 4</th>
+    </tr>
+  </thead>
+  <tbody>
+    {articles.map((article) => (
+      <tr key={article.id} className="border-t hover:bg-gray-50 dark:hover:bg-gray-700 text-black dark:text-white">
+        <td className="px-4 py-2">
+          <input
+            type="checkbox"
+            checked={selectedIds.includes(article.id)}
+            onChange={(e) =>
+              setSelectedIds((prev) =>
+                e.target.checked
+                  ? [...prev, article.id]
+                  : prev.filter((id) => id !== article.id)
+              )
+            }
+          />
+        </td>
+        <td className="px-4 py-2 space-x-2 text-sm">
+          <button
+            onClick={() => fetchArticle(article.id)}
+            className="text-blue-600 hover:underline dark:text-blue-400 flex items-center gap-1"
+          >
+            <Paintbrush className="w-4 h-4" />
+            Editar
+          </button>
+          <button
+            onClick={async () => {
+              if (confirm(`¿Eliminar artículo "${article.title}"?`)) {
+                try {
+                  await axios.delete(`/articles/${article.id}`);
+                  setArticles((prev) => prev.filter((a) => a.id !== article.id));
+                } catch (e) {
+                  alert('Error al eliminar');
+                  console.error(e);
+                }
+              }
+            }}
+            className="text-red-600 hover:underline dark:text-red-400 flex items-center gap-1"
+          >
+            <Trash2 className="w-4 h-4" />
+            Eliminar
+          </button>
+        </td>
+        <td className="px-4 py-2">{article.id}</td>
+        <td className="px-4 py-2">{article.title}</td>
+        <td className="px-4 py-2">{article.description}</td>
+        <td className="px-4 py-2">{article.quanty}</td>
+        {/* <td className="px-4 py-2">{article.price}</td> */}
+        <td className="px-4 py-2">{article.code}</td>
+        <td className="px-4 py-2">{article.condition}</td>
+        <td className="px-4 py-2">{article.state}</td>
+        {[article.file_1, article.file_2, article.file_3, article.file_4].map((file, i) => (
+          <td key={i} className="px-4 py-2">
+            {file && (
+              <a
+                href={`../../uploads/${file}`}
+                download={file}
+                className="text-blue-600 underline dark:text-blue-400"
+              >
+                {file}
+              </a>
+            )}
+          </td>
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>
 
-                <th className="px-4 py-2">Archivo 1</th>
-                <th className="px-4 py-2">Archivo 2</th>
-                <th className="px-4 py-2">Archivo 3</th>
-                <th className="px-4 py-2">Archivo 4</th>
-              </tr>
-            </thead>
-            <tbody>
-              {articles.map((article) => (
-                <tr key={article.id} className="border-t hover:bg-gray-50">
-                  <td className="px-4 py-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(article.id)}
-                      onChange={(e) =>
-                        setSelectedIds((prev) =>
-                          e.target.checked
-                            ? [...prev, article.id]
-                            : prev.filter((id) => id !== article.id)
-                        )
-                      }
-                    />
-                  </td>
-                  <td className="px-4 py-2 space-x-2 text-sm">
-                    <button
-                      onClick={() => fetchArticle(article.id)}
-                      className="text-blue-600 hover:underline flex items-center gap-1"
-                    >
-                      <Paintbrush className="w-4 h-4" />
-                      Editar
-                    </button>
-                    <button
-                      onClick={async () => {
-                        if (confirm(`¿Eliminar artículo "${article.title}"?`)) {
-                          try {
-                            await axios.delete(`/articles/${article.id}`);
-                            setArticles((prev) => prev.filter((a) => a.id !== article.id));
-                          } catch (e) {
-                            alert('Error al eliminar');
-                            console.error(e);
-                          }
-                        }
-                      }}
-                      className="text-red-600 hover:underline flex items-center gap-1"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Eliminar
-                    </button>
-                  </td>
-                  <td className="px-4 py-2">{article.id}</td>
-                  <td className="px-4 py-2">{article.title}</td>
-                  <td className="px-4 py-2">{article.description}</td>
-                  <td className="px-4 py-2">{article.quanty}</td>
-                  <td className="px-4 py-2">{article.price}</td>
-                  <td className="px-4 py-2">{article.code}</td>
-<td className="px-4 py-2">{article.condition}</td>
-<td className="px-4 py-2">{article.state}</td>
-
-                  {[article.file_1, article.file_2, article.file_3, article.file_4].map((file, i) => (
-                    <td key={i} className="px-4 py-2">
-                      {file && (
-                        <a
-                          href={`../../uploads/${file}`}
-                          download={file}
-                          className="text-blue-600 underline"
-                        >
-                          {file}
-                        </a>
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
 
         <div className="flex justify-center mt-6 space-x-2">
