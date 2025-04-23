@@ -21,6 +21,7 @@ class UserController extends Controller
             'roles' => $roles,
         ]);
     }
+
     public function syncRoles(Request $request, $id)
     {
         $request->validate([
@@ -47,11 +48,17 @@ class UserController extends Controller
             'datebirth' => 'nullable|date',
             'cellphone' => 'nullable|string|max:20',
             'role' => 'nullable|string|exists:roles,name',
+            'photo' => 'nullable|file|max:2048',
         ]);
 
         $user = new User();
         $user->fill($request->only(['dni', 'firstname', 'lastname', 'names', 'email', 'sex', 'datebirth', 'cellphone']));
         $user->password = Hash::make($request->password);
+
+        if ($request->hasFile('photo')) {
+            $user->photo = fileStore($request->file('photo'), 'imageusers');
+        }
+
         $user->save();
 
         if ($request->role) {
@@ -66,6 +73,7 @@ class UserController extends Controller
         $user = User::with('roles')->findOrFail($id);
         return response()->json(['user' => $user]);
     }
+
     public function fetchPaginated()
     {
         $users = User::with('roles')->latest()->paginate(10);
@@ -86,12 +94,17 @@ class UserController extends Controller
             'datebirth' => 'nullable|date',
             'cellphone' => 'nullable|string|max:20',
             'role' => 'nullable|string|exists:roles,name',
+            'photo' => 'nullable|file|max:2048',
         ]);
 
-        $user->fill($request->except(['password', 'role']));
+        $user->fill($request->except(['password', 'role', 'photo']));
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('photo')) {
+            $user->photo = fileUpdate($request->file('photo'), 'imageusers', $user->photo);
         }
 
         $user->save();

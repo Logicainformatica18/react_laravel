@@ -39,6 +39,8 @@ export default function UserModal({
     role: '',
   });
 
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -55,6 +57,7 @@ export default function UserModal({
         datebirth: userToEdit.datebirth || '',
         role: userToEdit.roles?.[0]?.name || '',
       });
+      if (userToEdit.photo) setPreview(`/uploads/${userToEdit.photo}`);
     } else {
       handleReset();
     }
@@ -65,17 +68,37 @@ export default function UserModal({
     setFormData({ ...formData, [name]: value });
   };
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setPhoto(file);
+    if (file && file.type.startsWith('image')) {
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setPreview(null);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       setUploading(true);
 
-      const data = { ...formData };
-      if (!data.password) delete data.password; // no enviar si está vacío
+      const data = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        data.append(key, value);
+      });
+
+      if (photo) {
+        data.append('photo', photo);
+      }
 
       const url = userToEdit ? `/users/${userToEdit.id}` : '/users';
-      const method = userToEdit ? 'put' : 'post';
+      if (userToEdit) {
+        data.append('_method', 'PUT');
+      }
 
-      const res = await axios[method](url, data);
+      const res = await axios.post(url, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
       toast.success(userToEdit ? 'Usuario actualizado ✅' : 'Usuario creado ✅');
       onSaved(res.data.user);
@@ -102,6 +125,19 @@ export default function UserModal({
       datebirth: '',
       role: '',
     });
+    setPhoto(null);
+    setPreview(null);
+  };
+
+  const fieldLabels: Record<string, string> = {
+    firstname: 'Nombre',
+    lastname: 'Apellido',
+    names: 'Nombre completo',
+    email: 'Correo',
+    dni: 'DNI',
+    password: 'Contraseña',
+    cellphone: 'Celular',
+    datebirth: 'Fecha de nacimiento',
   };
 
   return (
@@ -112,9 +148,9 @@ export default function UserModal({
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          {['firstname', 'lastname', 'names', 'email', 'dni', 'password', 'cellphone', 'datebirth'].map((field) => (
+          {Object.keys(fieldLabels).map((field) => (
             <div key={field} className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor={field} className="text-right capitalize">{field}</Label>
+              <Label htmlFor={field} className="text-right">{fieldLabels[field]}</Label>
               <Input
                 type={field === 'password' ? 'password' : field === 'datebirth' ? 'date' : 'text'}
                 id={field}
@@ -155,6 +191,14 @@ export default function UserModal({
                 <option key={r.name} value={r.name}>{r.name}</option>
               ))}
             </select>
+          </div>
+
+          <div className="grid grid-cols-4 items-start gap-4">
+            <Label htmlFor="photo" className="text-right">Foto</Label>
+            <div className="col-span-3">
+              <Input type="file" id="photo" name="photo" accept="image/*" onChange={handlePhotoChange} />
+              {preview && <img src={preview} className="mt-2 w-20 h-20 rounded-full object-cover" alt="preview" />}
+            </div>
           </div>
         </div>
 
