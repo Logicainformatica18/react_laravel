@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react'; // Spinner icono
+import { Loader2 } from 'lucide-react';
 
 export default function ArticleModal({
   open,
@@ -32,6 +32,9 @@ export default function ArticleModal({
     details: '',
     quanty: 0,
     price: 0,
+    code: '',
+    condition: '',
+    state: '',
   });
 
   const [files, setFiles] = useState<{ [key: string]: File | null }>({
@@ -59,13 +62,16 @@ export default function ArticleModal({
         details: articleToEdit.details || '',
         quanty: articleToEdit.quanty || 0,
         price: articleToEdit.price || 0,
+        code: articleToEdit.code || '',
+        condition: articleToEdit.condition || '',
+        state: articleToEdit.state || '',
       });
     } else {
       handleReset();
     }
   }, [articleToEdit]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -139,6 +145,9 @@ export default function ArticleModal({
       details: '',
       quanty: 0,
       price: 0.0,
+      code: '',
+      condition: '',
+      state: '',
     });
     setFiles({ file_1: null, file_2: null, file_3: null, file_4: null });
     setPreviews({ file_1: null, file_2: null, file_3: null, file_4: null });
@@ -154,10 +163,7 @@ export default function ArticleModal({
         {uploading && (
           <div className="w-full mb-4">
             <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                className="h-2 bg-blue-500 transition-all duration-100"
-                style={{ width: `${progress}%` }}
-              />
+              <div className="h-2 bg-blue-500 transition-all duration-100" style={{ width: `${progress}%` }} />
             </div>
             <p className="text-xs text-center text-gray-500 mt-1">{progress}%</p>
           </div>
@@ -171,11 +177,9 @@ export default function ArticleModal({
             </div>
           )}
 
-          {['title', 'description', 'details', 'quanty', 'price'].map((field) => (
+          {['title', 'description', 'details', 'quanty', 'price', 'code', 'condition'].map((field) => (
             <div key={field} className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor={field} className="text-right capitalize">
-                {field.replace('_', ' ')}
-              </Label>
+              <Label htmlFor={field} className="text-right capitalize">{field.replace('_', ' ')}</Label>
               {field === 'details' ? (
                 <textarea
                   id={field}
@@ -199,6 +203,23 @@ export default function ArticleModal({
             </div>
           ))}
 
+          {/* Campo Select para state */}
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="state" className="text-right">Estado</Label>
+            <select
+              name="state"
+              id="state"
+              value={formData.state}
+              onChange={handleChange}
+              className="col-span-3 border rounded px-3 py-2 text-sm"
+            >
+              <option value="">Selecciona una opción</option>
+              <option value="bueno">Bueno</option>
+              <option value="daño leve">Daño leve</option>
+              <option value="daño moderado">Daño moderado</option>
+            </select>
+          </div>
+
           {[1, 2, 3, 4].map((num) => {
             const field = `file_${num}`;
             const file = files[field];
@@ -215,15 +236,9 @@ export default function ArticleModal({
                     <Input type="file" name={field} id={field} onChange={handleFileChange} />
                     {previews[field] &&
                       (isImage ? (
-                        <img
-                          src={previews[field]!}
-                          alt={`preview ${num}`}
-                          className="w-12 h-12 object-cover rounded"
-                        />
+                        <img src={previews[field]!} alt={`preview ${num}`} className="w-12 h-12 object-cover rounded" />
                       ) : (
-                        <span className="text-sm text-gray-600 truncate max-w-[120px]">
-                          {previews[field]}
-                        </span>
+                        <span className="text-sm text-gray-600 truncate max-w-[120px]">{previews[field]}</span>
                       ))}
                   </div>
                   {fileSizeText && (
@@ -234,24 +249,18 @@ export default function ArticleModal({
             );
           })}
 
-          <span className="text-xs text-right block text-gray-600">
-            Los archivos deben de ser menores a 2000 KB
-          </span>
+          <span className="text-xs text-right block text-gray-600">Los archivos deben de ser menores a 2000 KB</span>
         </div>
 
         <DialogFooter className="flex justify-between">
           <div className="flex gap-2">
-            <Button variant="outline" onClick={handleReset} disabled={uploading}>
-              Nuevo
-            </Button>
+            <Button variant="outline" onClick={handleReset} disabled={uploading}>Nuevo</Button>
             <Button onClick={handleSubmit} disabled={uploading}>
               {uploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {articleToEdit ? 'Actualizar' : 'Guardar'}
             </Button>
           </div>
-          <Button variant="ghost" onClick={onClose} disabled={uploading}>
-            Cerrar
-          </Button>
+          <Button variant="ghost" onClick={onClose} disabled={uploading}>Cerrar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

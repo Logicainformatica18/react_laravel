@@ -9,20 +9,23 @@ import { router } from '@inertiajs/react'; // al inicio del archivo
 
 
 const breadcrumbs: BreadcrumbItem[] = [
-{ title: 'Transfers', href: '/transfers' },
+    { title: 'Transfers', href: '/transfers' },
 ];
 
 type Transfer = {
-id: number;
-description?: string;
-details?: string;
-sender_firstname?: string;
-sender_lastname?: string;
-sender_email?: string;
-receiver_firstname?: string;
-receiver_lastname?: string;
-receiver_email?: string;
-file_1?: string;
+    id: number;
+    description?: string;
+    details?: string;
+    sender_firstname?: string;
+    sender_lastname?: string;
+    sender_email?: string;
+    receiver_firstname?: string;
+    receiver_lastname?: string;
+    receiver_email?: string;
+    file_1?: string;
+    confirmed_at?: string;
+    received_at?: string;
+
 };
 
 type Pagination<T> = {
@@ -31,209 +34,222 @@ type Pagination<T> = {
     last_page: number;
     next_page_url: string | null;
     prev_page_url: string | null;
+};
+
+export default function Transfers() {
+    const { transfers: initialPagination } = usePage<{ transfers: Pagination<Transfer> }>().props;
+    const [transfers, setTransfers] = useState<Transfer[]>(initialPagination.data);
+    const [pagination, setPagination] = useState(initialPagination);
+    const [showModal, setShowModal] = useState(false);
+    const [editTransfer, setEditTransfer] = useState<Transfer | null>(null);
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+    const handleTransferSaved = (saved: Transfer) => {
+        setTransfers((prev) => {
+            const exists = prev.find((a) => a.id === saved.id);
+            return exists ? prev.map((a) => (a.id === saved.id ? saved : a)) : [saved, ...prev];
+        });
+        setEditTransfer(null);
     };
 
-    export default function Transfers() {
-    const { transfers: initialPagination } = usePage<{ transfers: Pagination<Transfer> }>().props;
-        const [transfers, setTransfers] = useState<Transfer[]>(initialPagination.data);
-            const [pagination, setPagination] = useState(initialPagination);
-            const [showModal, setShowModal] = useState(false);
-            const [editTransfer, setEditTransfer] = useState<Transfer | null>(null);
-                const [selectedIds, setSelectedIds] = useState<number[]>([]);
+    const fetchTransfer = async (id: number) => {
+        const res = await axios.get(`/transfers/${id}`);
+        setEditTransfer(res.data.transfer);
+        setShowModal(true);
+    };
 
-                    const handleTransferSaved = (saved: Transfer) => {
-                    setTransfers((prev) => {
-                    const exists = prev.find((a) => a.id === saved.id);
-                    return exists ? prev.map((a) => (a.id === saved.id ? saved : a)) : [saved, ...prev];
-                    });
+    const fetchPage = async (url: string) => {
+        try {
+            const res = await axios.get(url);
+            setTransfers(res.data.transfers.data);
+            setPagination(res.data.transfers);
+        } catch (e) {
+            console.error('Error al cargar página', e);
+        }
+    };
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <div className="p-8">
+                <h1 className="text-2xl font-bold mb-4">Listado de Transfers</h1>
+                <p className="text-muted-foreground mb-6">Aquí puedes administrar tus transfers.</p>
+
+                <button onClick={() => {
                     setEditTransfer(null);
-                    };
-
-                    const fetchTransfer = async (id: number) => {
-                    const res = await axios.get(`/transfers/${id}`);
-                    setEditTransfer(res.data.transfer);
                     setShowModal(true);
-                    };
+                }}
+                    className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                >
+                    Nuevo Transfer
+                </button>
 
-                    const fetchPage = async (url: string) => {
-                    try {
-                    const res = await axios.get(url);
-                    setTransfers(res.data.transfers.data);
-                    setPagination(res.data.transfers);
-                    } catch (e) {
-                    console.error('Error al cargar página', e);
-                    }
-                    };
-
-                    return (
-                    <AppLayout breadcrumbs={breadcrumbs}>
-                        <div className="p-8">
-                            <h1 className="text-2xl font-bold mb-4">Listado de Transfers</h1>
-                            <p className="text-muted-foreground mb-6">Aquí puedes administrar tus transfers.</p>
-
-                            <button onClick={()=> {
-                                setEditTransfer(null);
-                                setShowModal(true);
-                                }}
-                                className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                                >
-                                Nuevo Transfer
-                            </button>
-
-                            {selectedIds.length > 0 && (
-                            <button onClick={async ()=> {
-                                if (confirm(`¿Eliminar ${selectedIds.length} transfers?`)) {
-                                try {
+                {selectedIds.length > 0 && (
+                    <button onClick={async () => {
+                        if (confirm(`¿Eliminar ${selectedIds.length} transfers?`)) {
+                            try {
                                 await axios.post('/transfers/bulk-delete', { ids: selectedIds });
                                 setTransfers((prev) => prev.filter((a) => !selectedIds.includes(a.id)));
                                 setSelectedIds([]);
-                                } catch (e) {
+                            } catch (e) {
                                 alert('Error al eliminar en lote');
                                 console.error(e);
-                                }
-                                }
-                                }}
-                                className="ml-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                                >
-                                Eliminar seleccionados
-                            </button>
-                            )}
+                            }
+                        }
+                    }}
+                        className="ml-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                    >
+                        Eliminar seleccionados
+                    </button>
+                )}
 
-                            {/* <a href="/transfers/export/excel"
+                {/* <a href="/transfers/export/excel"
                                 className="px-4 ml-2 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
                                 target="_blank">
                                 Exportar a Excel
                             </a> */}
 
-                            <div className="overflow-x-auto mt-4">
-                                <table className="min-w-full divide-y divide-gray-200 bg-white shadow-md rounded">
-                                    <thead className="bg-gray-100">
-                                        <tr>
-                                            <th className="px-4 py-2">
-                                                <input type="checkbox" checked={selectedIds.length===transfers.length}
-                                                    onChange={(e)=> {
-                                                setSelectedIds(e.target.checked ? transfers.map((a) => a.id) : []);
-                                                }}
-                                                />
-                                            </th>
-                                            <th className="px-4 py-2">Acciones</th>
-                                            <th className="px-4 py-2">Artículos</th>
-                                            <th className="px-4 py-2">ID</th>
-                                            <th className="px-4 py-2">Descripción</th>
-                                            <th className="px-4 py-2">Detalles</th>
-                                            <th className="px-4 py-2">Emisor Email</th>
-                                            <th className="px-4 py-2">Emisor Nombres</th>
-                                            <th className="px-4 py-2">Receptor Email</th>
-                                            <th className="px-4 py-2">Receptor Nombres</th>
-                                            <th className="px-4 py-2">Archivo</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {transfers.map((transfer) => (
-                                        <tr key={transfer.id} className="border-t hover:bg-gray-50">
-                                            <td className="px-4 py-2">
-                                                <input type="checkbox" checked={selectedIds.includes(transfer.id)}
-                                                    onChange={(e)=> {
-                                                setSelectedIds((prev) =>
-                                                e.target.checked
-                                                ? [...prev, transfer.id]
-                                                : prev.filter((id) => id !== transfer.id)
-                                                );
-                                                }}
-                                                />
-                                            </td>
-                                            <td className="px-4 py-2 text-sm text-gray-700 space-x-2">
-                                                <button onClick={()=> fetchTransfer(transfer.id)}
-                                                    className="flex items-center gap-1 text-blue-600 hover:underline"
-                                                    >
-                                                    <Paintbrush className="w-4 h-4" />
-                                                    Editar
-                                                </button>
+                <div className="overflow-x-auto mt-4">
+                    <table className="min-w-full divide-y divide-gray-200 bg-white shadow-md rounded">
+                        <thead className="bg-gray-100">
+                            <tr>
+                                <th className="px-4 py-2">
+                                    <input type="checkbox" checked={selectedIds.length === transfers.length}
+                                        onChange={(e) => {
+                                            setSelectedIds(e.target.checked ? transfers.map((a) => a.id) : []);
+                                        }}
+                                    />
+                                </th>
+                                <th className="px-4 py-2">Acciones</th>
+                                <th className="px-4 py-2">Artículos</th>
+                                <th className="px-4 py-2">ID</th>
+                                <th className="px-4 py-2">Descripción</th>
+                                <th className="px-4 py-2">Detalles</th>
+                                <th className="px-4 py-2">Emisor Email</th>
+                                <th className="px-4 py-2">Emisor Nombres</th>
+                                <th className="px-4 py-2">Receptor Email</th>
+                                <th className="px-4 py-2">Receptor Nombres</th>
+                                <th className="px-4 py-2">Archivo</th>
+                                <th className="px-4 py-2">Fecha de Recepción</th>
+                                <th className="px-4 py-2">¿Confirmado?</th>
 
-                                                <button onClick={async ()=> {
-                                                    if (confirm(`¿Eliminar transfer ID ${transfer.id}?`)) {
-                                                    try {
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {transfers.map((transfer) => (
+                                <tr key={transfer.id} className="border-t hover:bg-gray-50">
+                                    <td className="px-4 py-2">
+                                        <input type="checkbox" checked={selectedIds.includes(transfer.id)}
+                                            onChange={(e) => {
+                                                setSelectedIds((prev) =>
+                                                    e.target.checked
+                                                        ? [...prev, transfer.id]
+                                                        : prev.filter((id) => id !== transfer.id)
+                                                );
+                                            }}
+                                        />
+                                    </td>
+                                    <td className="px-4 py-2 text-sm text-gray-700 space-x-2">
+                                        <button onClick={() => fetchTransfer(transfer.id)}
+                                            className="flex items-center gap-1 text-blue-600 hover:underline"
+                                        >
+                                            <Paintbrush className="w-4 h-4" />
+                                            Editar
+                                        </button>
+
+                                        <button onClick={async () => {
+                                            if (confirm(`¿Eliminar transfer ID ${transfer.id}?`)) {
+                                                try {
                                                     await axios.delete(`/transfers/${transfer.id}`);
                                                     setTransfers((prev) => prev.filter((a) => a.id !== transfer.id));
-                                                    } catch (e) {
+                                                } catch (e) {
                                                     alert('Error al eliminar');
                                                     console.error(e);
-                                                    }
-                                                    }
-                                                    }}
-                                                    className="flex items-center gap-1 text-red-600 hover:underline"
-                                                    >
-                                                    <Trash2 className="w-4 h-4" />
-                                                    Eliminar
-                                                </button>
-                                            </td>
-                                            <td className="px-4 py-2">
-                                                <button onClick={()=>
-                                                    router.visit(`/transfers/${transfer.id}/articles`)}
+                                                }
+                                            }
+                                        }}
+                                            className="flex items-center gap-1 text-red-600 hover:underline"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        <button onClick={() =>
+                                            router.visit(`/transfers/${transfer.id}/articles`)}
 
-                                                    className="text-sm text-indigo-600 hover:underline"
-                                                    >
-                                                    Ver artículos
-                                                </button>
-                                            </td>
+                                            className="text-sm text-indigo-600 hover:underline"
+                                        >
+                                            Ver artículos
+                                        </button>
+                                    </td>
 
-                                            <td className="px-4 py-2">{transfer.id}</td>
-                                            <td className="px-4 py-2">{transfer.description}</td>
-                                            <td className="px-4 py-2">{transfer.details}</td>
-                                            <td className="px-4 py-2">{transfer.sender_firstname}
-                                                {transfer.sender_lastname}</td>
-                                            <td className="px-4 py-2">
+                                    <td className="px-4 py-2">{transfer.id}</td>
+                                    <td className="px-4 py-2">{transfer.description}</td>
+                                    <td className="px-4 py-2">{transfer.details}</td>
+                                    <td className="px-4 py-2">{transfer.sender_firstname}
+                                        {transfer.sender_lastname}</td>
+                                    <td className="px-4 py-2">
 
-                                                <span className="text-sm text-gray-600">{transfer.sender_email}</span>
-                                            </td>
-                                            <td className="px-4 py-2">{transfer.receiver_firstname}
-                                                {transfer.receiver_lastname}</td>
-                                            <td className="px-4 py-2">
+                                        <span className="text-sm text-gray-600">{transfer.sender_email}</span>
+                                    </td>
+                                    <td className="px-4 py-2">{transfer.receiver_firstname}
+                                        {transfer.receiver_lastname}</td>
+                                    <td className="px-4 py-2">
 
-                                                <span className="text-sm text-gray-600">{transfer.receiver_email}</span>
-                                            </td>
-                                            <td className="px-4 py-2">
-                                                {transfer.file_1 && (
-                                                <a href={`../../uploads/${transfer.file_1}`} download
-                                                    className="text-blue-600 underline">
-                                                    {transfer.file_1}
-                                                </a>
-                                                )}
-                                            </td>
-                                        </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                        <span className="text-sm text-gray-600">{transfer.receiver_email}</span>
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        {transfer.file_1 && (
+                                            <a href={`../../uploads/${transfer.file_1}`} download
+                                                className="text-blue-600 underline">
+                                                {transfer.file_1}
+                                            </a>
+                                        )}
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        {transfer.received_at ? new Date(transfer.received_at).toLocaleString() : '-'}
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        {transfer.confirmed_at ? (
+                                            <span className="text-green-600 font-semibold">✅ Confirmado</span>
+                                        ) : (
+                                            <span className="text-red-500">❌ Sin confirmar</span>
+                                        )}
+                                    </td>
 
-                            <div className="flex justify-center mt-6 space-x-2">
-                                {[...Array(pagination.last_page)].map((_, index) => {
-                                const page = index + 1;
-                                return (
-                                <button key={page} onClick={()=> fetchPage(`/transfers/fetch?page=${page}`)}
-                                    className={`px-3 py-1 rounded text-sm font-medium transition ${
-                                    pagination.current_page === page
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="flex justify-center mt-6 space-x-2">
+                    {[...Array(pagination.last_page)].map((_, index) => {
+                        const page = index + 1;
+                        return (
+                            <button key={page} onClick={() => fetchPage(`/transfers/fetch?page=${page}`)}
+                                className={`px-3 py-1 rounded text-sm font-medium transition ${pagination.current_page === page
+                                        ? 'bg-blue-600 text-white'
+                                        : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
                                     }`}
-                                    disabled={pagination.current_page === page}
-                                    >
-                                    {page}
-                                </button>
-                                );
-                                })}
-                            </div>
-                        </div>
+                                disabled={pagination.current_page === page}
+                            >
+                                {page}
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
 
-                        {showModal && (
-                        <TransferModal open={showModal} onClose={()=> {
-                            setShowModal(false);
-                            setEditTransfer(null);
-                            }}
-                            onSaved={handleTransferSaved}
-                            transferToEdit={editTransfer}
-                            />
-                            )}
-                    </AppLayout>
-                    );
-                    }
+            {showModal && (
+                <TransferModal open={showModal} onClose={() => {
+                    setShowModal(false);
+                    setEditTransfer(null);
+                }}
+                    onSaved={handleTransferSaved}
+                    transferToEdit={editTransfer}
+                />
+            )}
+        </AppLayout>
+    );
+}

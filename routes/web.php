@@ -38,6 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/transfers/{id}', [TransferController::class, 'update']);
     Route::get('/transfers/{id}', [TransferController::class, 'show']);
     Route::post('/transfers/bulk-delete', [TransferController::class, 'bulkDelete']);
+    Route::get('/transfer-confirmation/{token}', [TransferController::class, 'confirm'])->name('transfer.confirm');
 
 
  //   Route::get('/transfers/export/excel', [TransferController::class, 'exportExcel']);

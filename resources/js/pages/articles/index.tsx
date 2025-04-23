@@ -11,18 +11,22 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type Article = {
-  id: number;
-  title: string;
-  description?: string;
-  details?: string;
-  quanty?: number;
-  price?: number;
-  file_1?: string;
-  file_2?: string;
-  file_3?: string;
-  file_4?: string;
-  transfer_id?: number;
-};
+    id: number;
+    title: string;
+    description?: string;
+    details?: string;
+    quanty?: number;
+    price?: number;
+    file_1?: string;
+    file_2?: string;
+    file_3?: string;
+    file_4?: string;
+    transfer_id?: number;
+    code?: string;
+    condition?: string;
+    state?: string;
+  };
+
 
 type Pagination<T> = {
   data: T[];
@@ -141,6 +145,10 @@ export default function Articles() {
                 <th className="px-4 py-2">Descripción</th>
                 <th className="px-4 py-2">Cantidad</th>
                 <th className="px-4 py-2">Precio</th>
+                <th className="px-4 py-2">Código</th>
+<th className="px-4 py-2">Condición</th>
+<th className="px-4 py-2">Estado</th>
+
                 <th className="px-4 py-2">Archivo 1</th>
                 <th className="px-4 py-2">Archivo 2</th>
                 <th className="px-4 py-2">Archivo 3</th>
@@ -194,6 +202,10 @@ export default function Articles() {
                   <td className="px-4 py-2">{article.description}</td>
                   <td className="px-4 py-2">{article.quanty}</td>
                   <td className="px-4 py-2">{article.price}</td>
+                  <td className="px-4 py-2">{article.code}</td>
+<td className="px-4 py-2">{article.condition}</td>
+<td className="px-4 py-2">{article.state}</td>
+
                   {[article.file_1, article.file_2, article.file_3, article.file_4].map((file, i) => (
                     <td key={i} className="px-4 py-2">
                       {file && (

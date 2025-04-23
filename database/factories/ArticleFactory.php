@@ -12,13 +12,20 @@ class ArticleFactory extends Factory
             'title' => $this->faker->sentence(4),
             'description' => $this->faker->paragraph(),
             'details' => $this->faker->paragraphs(2, true),
-            'quanty' => $this->faker->numberBetween(0, 100),
-            'transfer_id' => 1,
-            'price' => $this->faker->randomFloat(2, 0, 1000),
+            'quanty' => $this->faker->numberBetween(1, 50),
+            'price' => $this->faker->randomFloat(2, 10, 1000),
+
+            'code' => strtoupper($this->faker->bothify('COD-###??')), // ej: COD-245AB
+            'condition' => $this->faker->randomElement(['nuevo', 'usado', 'dañado']),
+            'state' => $this->faker->randomElement(['activo', 'pendiente', 'trasladado']),
+
+            'transfer_id' => 1, // puedes reemplazarlo dinámicamente en el seeder si quieres
+
             'file_1' => $this->faker->image('public/uploads', 640, 480, null, false),
             'file_2' => $this->faker->image('public/uploads', 640, 480, null, false),
             'file_3' => $this->faker->image('public/uploads', 640, 480, null, false),
             'file_4' => $this->faker->image('public/uploads', 640, 480, null, false),
         ];
+
     }
 }

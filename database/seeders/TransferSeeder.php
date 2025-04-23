@@ -12,6 +12,7 @@ class TransferSeeder extends Seeder
      */
     public function run(): void
     {
+
         for ($i = 1; $i <= 10; $i++) {
             Transfer::create([
                 'description'          => 'Transferencia #' . $i,
@@ -22,8 +23,14 @@ class TransferSeeder extends Seeder
                 'receiver_firstname'   => fake()->firstName(),
                 'receiver_lastname'    => fake()->lastName(),
                 'receiver_email'       => fake()->unique()->safeEmail(),
-                'file_1'               => 'dummy_' . Str::random(10) . '.pdf', // archivo ficticio
+                'file_1'               => 'dummy_' . Str::random(10) . '.pdf',
+
+                // Nuevos campos
+                'confirmation_token'   => Str::uuid(),
+                'confirmed_at'         => fake()->boolean(50) ? now() : null,
+                'received_at'          => fake()->boolean(50) ? now() : null,
             ]);
         }
+
     }
 }

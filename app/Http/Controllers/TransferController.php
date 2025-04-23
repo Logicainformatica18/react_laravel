@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TransfersExport;
 use App\Mail\TransferNotification;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 class TransferController extends Controller
 {
@@ -51,6 +52,10 @@ class TransferController extends Controller
             $transfer->file_1 = fileStore($request->file('file_1'), 'uploads');
         }
 
+        $transfer->received_at = now();
+
+        $transfer->confirmed_at = null;
+
         $transfer->save();
 
         return response()->json([
@@ -58,6 +63,7 @@ class TransferController extends Controller
             'transfer' => $transfer,
         ]);
     }
+
     public function articles($id)
     {
         $transfer = Transfer::with('articles')->findOrFail($id);
@@ -102,7 +108,9 @@ class TransferController extends Controller
                 $transfer->file_1
             );
         }
+        $transfer->received_at = now();
 
+        $transfer->confirmed_at = null;
         $transfer->save();
 
         return response()->json(['transfer' => $transfer], 200);
@@ -138,11 +146,33 @@ class TransferController extends Controller
     {
         $transfer = Transfer::findOrFail($id);
 
-        // Aquí envías el correo
+        // Solo genera token si aún no ha sido confirmado
+        if (is_null($transfer->confirmed_at)) {
+            $transfer->confirmation_token = Str::uuid(); // Genera un token único
+            $transfer->confirmed_at = null; // Se asegura que esté nulo
+            $transfer->save();
+        }
+
+        // Envío de correo
         Mail::to($transfer->receiver_email)->send(new TransferNotification($transfer));
 
-        return response()->json(['message' => 'Correo enviado correctamente']);
+        return response()->json(['message' => '📧 Correo de notificación enviado correctamente']);
     }
 
+
+
+    public function confirm($token)
+    {
+        $transfer = Transfer::where('confirmation_token', $token)->firstOrFail();
+
+        if ($transfer->confirmed_at) {
+            return response('<h2>⚠️ Esta transferencia ya ha sido confirmada anteriormente.</h2>', 200);
+        }
+
+        $transfer->confirmed_at = now();
+        $transfer->save();
+
+        return response('<h2>✅ Gracias. La recepción ha sido confirmada correctamente.</h2>', 200);
+    }
 
 }

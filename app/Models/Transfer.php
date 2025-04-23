@@ -12,14 +12,22 @@ class Transfer extends Model
     protected $fillable = [
         'description',
         'details',
+
         'sender_firstname',
         'sender_lastname',
         'sender_email',
+
         'receiver_firstname',
         'receiver_lastname',
         'receiver_email',
+
         'file_1',
+
+        'confirmation_token',
+        'confirmed_at',
+        'received_at',
     ];
+
     public function articles()
     {
         return $this->hasMany(Article::class);

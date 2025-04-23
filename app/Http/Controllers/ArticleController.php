@@ -32,7 +32,11 @@ class ArticleController extends Controller
             'description' => 'nullable|string',
             'details' => 'nullable|string',
             'quanty' => 'nullable|integer|min:0',
-           'price' => 'nullable|numeric|min:0',
+            'price' => 'nullable|numeric|min:0',
+            'code' => 'nullable|string|max:50',
+            'condition' => 'nullable|string|max:50',
+            'state' => 'nullable|string|max:50',
+            'transfer_id' => 'required|exists:transfers,id',
 
             'file_1' => 'nullable|file|max:2048',
             'file_2' => 'nullable|file|max:2048',
@@ -40,30 +44,31 @@ class ArticleController extends Controller
             'file_4' => 'nullable|file|max:2048',
         ]);
 
-
         $article = new Article();
         $article->title = $request->title;
         $article->description = $request->description;
         $article->details = $request->details;
         $article->quanty = $request->quanty;
         $article->price = $request->price;
+        $article->code = $request->code;
+        $article->condition = $request->condition;
+        $article->state = $request->state;
         $article->transfer_id = $request->transfer_id;
-
-        $directory = 'uploads';
 
         foreach (['file_1', 'file_2', 'file_3', 'file_4'] as $field) {
             if ($request->hasFile($field)) {
-                $article->$field = fileStore($request->file($field), $directory);
+                $article->$field = fileStore($request->file($field), 'uploads');
             }
         }
 
         $article->save();
 
-            return response()->json([
-                'message' => '✅ Artículo creado correctamente',
-                'article' => $article,
-            ]);
+        return response()->json([
+            'message' => '✅ Artículo creado correctamente',
+            'article' => $article,
+        ]);
     }
+
 
 
     public function update(Request $request, $id)
@@ -74,6 +79,10 @@ class ArticleController extends Controller
             'details' => 'nullable|string',
             'quanty' => 'nullable|integer|min:0',
             'price' => 'nullable|numeric|min:0',
+            'code' => 'nullable|string|max:50',
+            'condition' => 'nullable|string|max:50',
+            'state' => 'nullable|string|max:50',
+
             'file_1' => 'nullable|file|max:2048',
             'file_2' => 'nullable|file|max:2048',
             'file_3' => 'nullable|file|max:2048',
@@ -107,6 +116,7 @@ class ArticleController extends Controller
 
         return response()->json(['article' => $article], 200);
     }
+
 
 
     public function show($id)

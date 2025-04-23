@@ -11,22 +11,32 @@ return new class extends Migration
      */
     public function up(): void
     {
+
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->longText('details')->nullable(); // se recomienda plural si es más largo
+            $table->longText('details')->nullable();
             $table->integer('quanty')->default(0);
             $table->decimal('price', 10, 2)->default(0);
+
+            // Nuevas columnas
+            $table->string('code')->nullable(); // Código de inventario
+            $table->string('condition')->nullable(); // Estado físico: nuevo, usado, dañado
+
+
+            $table->string('state')->nullable();
             $table->bigInteger('transfer_id')->unsigned();
             $table->foreign('transfer_id')->references('id')->on('transfers')->onDelete('cascade');
+
+
             $table->string('file_1')->nullable();
             $table->string('file_2')->nullable();
             $table->string('file_3')->nullable();
             $table->string('file_4')->nullable();
             $table->timestamps();
         });
-        
+
     }
 
     /**
