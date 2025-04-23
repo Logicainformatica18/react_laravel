@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Exports;
 
 use App\Models\Article;
@@ -24,6 +25,15 @@ class ArticlesExport implements FromCollection, WithHeadings
                 'details',
                 'quanty',
                 'price',
+                'code',
+                'condition',
+                'state',
+                'file_1',
+                'file_2',
+                'file_3',
+                'file_4',
+                'created_at',
+                'updated_at',
             ])->get();
     }
 
@@ -36,6 +46,15 @@ class ArticlesExport implements FromCollection, WithHeadings
             'Detalles',
             'Cantidad',
             'Precio',
+            'Código',
+            'Condición',
+            'Estado',
+            'Archivo 1',
+            'Archivo 2',
+            'Archivo 3',
+            'Archivo 4',
+            'Creado el',
+            'Actualizado el',
         ];
     }
 }
