@@ -1,8 +1,11 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
-export default function ArticleListTable({ articles, onDelete, onSubmit }: {
-  articles: { description: string; quanty: number }[];
+export default function ArticleListTable({
+  articles,
+  onDelete,
+  onSubmit,
+}: {
+  articles: any[];
   onDelete: (index: number) => void;
   onSubmit: () => void;
 }) {
@@ -17,6 +20,9 @@ export default function ArticleListTable({ articles, onDelete, onSubmit }: {
                 <th className="px-4 py-2 text-left text-black dark:text-white">Artículo</th>
                 <th className="px-4 py-2 text-left text-black dark:text-white">Cantidad</th>
                 <th className="px-4 py-2 text-left text-black dark:text-white">Estado</th>
+                <th className="px-4 py-2 text-left text-black dark:text-white">Imagen 1</th>
+                <th className="px-4 py-2 text-left text-black dark:text-white">Imagen 2</th>
+                <th className="px-4 py-2 text-left text-black dark:text-white">Imagen 3</th>
                 <th className="px-4 py-2 text-left text-black dark:text-white">Acciones</th>
               </tr>
             </thead>
@@ -26,6 +32,23 @@ export default function ArticleListTable({ articles, onDelete, onSubmit }: {
                   <td className="px-4 py-2 text-black dark:text-white">{article.description}</td>
                   <td className="px-4 py-2 text-black dark:text-white">{article.quanty}</td>
                   <td className="px-4 py-2 text-black dark:text-white">{article.state}</td>
+                  {[1, 2, 3].map((num) => {
+                    const field = `file_${num}`;
+                    const file = article[field];
+                    return (
+                      <td key={field} className="px-4 py-2 text-black dark:text-white">
+                        {file ? (
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt="Imagen"
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                        ) : (
+                          <span className="text-xs text-gray-400">Sin imagen</span>
+                        )}
+                      </td>
+                    );
+                  })}
                   <td className="px-4 py-2">
                     <Button
                       variant="destructive"
@@ -39,6 +62,7 @@ export default function ArticleListTable({ articles, onDelete, onSubmit }: {
               ))}
             </tbody>
           </table>
+
           <div className="flex justify-end mt-4">
             <Button onClick={onSubmit}>Guardar Todo</Button>
           </div>

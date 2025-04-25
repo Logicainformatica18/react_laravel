@@ -70,6 +70,8 @@ class ArticleController extends Controller
             'article' => $article,
         ]);
     }
+  
+    
     public function bulkStore(Request $request)
     {
         $request->validate([
@@ -84,25 +86,38 @@ class ArticleController extends Controller
             'articles.*.code' => 'nullable|string|max:50',
             'articles.*.condition' => 'nullable|string|max:50',
             'articles.*.state' => 'nullable|string|max:50',
+            'articles.*.file_1' => 'nullable|file|max:2048',
+            'articles.*.file_2' => 'nullable|file|max:2048',
+            'articles.*.file_3' => 'nullable|file|max:2048',
+            'articles.*.file_4' => 'nullable|file|max:2048',
         ]);
     
-        foreach ($request->articles as $articleData) {
-            Article::create([
-                'title' => $articleData['title'] ?? $articleData['description'],
-                'description' => $articleData['description'],
-                'details' => $articleData['details'] ?? null,
-                'quanty' => $articleData['quanty'],
-                'price' => $articleData['price'] ?? 0,
-                'code' => $articleData['code'] ?? '',
-                'condition' => $articleData['condition'] ?? '',
-                'state' => $articleData['state'] ?? '',
-                'transfer_id' => $request->transfer_id,
-                'product_id' => $articleData['product_id'],
-            ]);
+        foreach ($request->articles as $index => $articleData) {
+            $article = new Article();
+            $article->title = $articleData['title'] ?? $articleData['description'];
+            $article->description = $articleData['description'];
+            $article->details = $articleData['details'] ?? null;
+            $article->quanty = $articleData['quanty'];
+            $article->price = $articleData['price'] ?? 0;
+            $article->code = $articleData['code'] ?? '';
+            $article->condition = $articleData['condition'] ?? '';
+            $article->state = $articleData['state'] ?? '';
+            $article->transfer_id = $request->transfer_id;
+            $article->product_id = $articleData['product_id'];
+    
+            // ✅ Procesar imágenes (file_1, file_2, file_3, file_4)
+            foreach (['file_1', 'file_2', 'file_3', 'file_4'] as $field) {
+                if ($request->hasFile("articles.$index.$field")) {
+                    $article->$field = fileStore($request->file("articles.$index.$field"), 'uploads');
+                }
+            }
+    
+            $article->save();
         }
     
         return response()->json(['message' => '✅ Artículos guardados correctamente']);
     }
+    
     
 
     public function update(Request $request, $id)
