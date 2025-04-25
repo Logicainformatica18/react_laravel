@@ -1,5 +1,3 @@
-// resources/js/pages/articles/modal.tsx
-
 import { useEffect, useState } from 'react';
 import {
   Dialog,
@@ -42,6 +40,7 @@ export default function ArticleModal({
     product_id: null,
   });
 
+  const [productSearchQuery, setProductSearchQuery] = useState('');
   const [articles, setArticles] = useState<typeof formData[]>([]);
   const [uploading, setUploading] = useState(false);
 
@@ -85,6 +84,7 @@ export default function ArticleModal({
         state: '',
         product_id: null,
       });
+      setProductSearchQuery('');
     } else {
       toast.error('Completa los campos obligatorios.');
     }
@@ -128,28 +128,25 @@ export default function ArticleModal({
           <div className="grid grid-cols-4 items-center gap-4">
             <Label className="text-right">Buscar producto</Label>
             <div className="col-span-3">
-              <ProductSearch
-                onSelect={(product) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    title: product.description,
-                    description: product.description,
-                    code: product.code ?? '',
-                    product_id: product.id,
-                  }));
-                }}
-              />
+            <ProductSearch
+  query={productSearchQuery}
+  setQuery={setProductSearchQuery}
+  onSelect={(product) => {
+    setFormData((prev) => ({
+      ...prev,
+      title: product.description,
+      description: product.description,
+      code: product.code ?? '',
+      product_id: product.id,
+    }));
+    setProductSearchQuery(product.description); // cuando seleccionas actualizas el input
+  }}
+/>
+
             </div>
           </div>
 
-          {[
-            { name: 'details', label: 'Detalles' },
-            { name: 'quanty', label: 'Cantidad' },
-            // { name: 'price', label: 'Precio' },
-            { name: 'code', label: 'Código' },
-            { name: 'condition', label: 'Condición' },
-            { name: 'state', label: 'Estado' },
-          ].map(({ name, label }) => (
+          {[{ name: 'details', label: 'Detalles' }, { name: 'quanty', label: 'Cantidad' }, { name: 'code', label: 'Código' }, { name: 'condition', label: 'Condición' }, { name: 'state', label: 'Estado' }].map(({ name, label }) => (
             <div key={name} className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor={name} className="text-right">{label}</Label>
               {name === 'details' ? (
@@ -178,8 +175,8 @@ export default function ArticleModal({
                 <Input
                   id={name}
                   name={name}
-                  type={name === 'quanty' || name === 'price' ? 'number' : 'text'}
-                  min={name === 'quanty' || name === 'price' ? 0 : undefined}
+                  type={name === 'quanty' ? 'number' : 'text'}
+                  min={name === 'quanty' ? 0 : undefined}
                   value={(formData as any)[name]}
                   onChange={handleChange}
                   className="col-span-3"

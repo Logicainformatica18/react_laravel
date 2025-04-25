@@ -1,14 +1,20 @@
 import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
-export default function ProductSearch({ onSelect }: { onSelect: (product: any) => void }) {
-  const [query, setQuery] = useState('');
+export default function ProductSearch({
+  query,
+  setQuery,
+  onSelect,
+}: {
+  query: string;
+  setQuery: (value: string) => void;
+  onSelect: (product: any) => void;
+}) {
   const [results, setResults] = useState<any[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const search = async (q: string) => {
-    setQuery(q);
     if (q.length >= 2) {
       try {
         const res = await axios.get(`/products/search?q=${q}`);
@@ -23,7 +29,15 @@ export default function ProductSearch({ onSelect }: { onSelect: (product: any) =
     }
   };
 
-  // Cierra el dropdown si haces clic fuera del componente
+  useEffect(() => {
+    if (query.length >= 2) {
+      search(query);
+    } else {
+      setResults([]);
+      setShowDropdown(false);
+    }
+  }, [query]);
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
@@ -39,7 +53,7 @@ export default function ProductSearch({ onSelect }: { onSelect: (product: any) =
       <input
         type="text"
         value={query}
-        onChange={(e) => search(e.target.value)}
+        onChange={(e) => setQuery(e.target.value)}
         placeholder="Buscar producto por descripción"
         className="w-full border px-3 py-2 rounded"
       />
@@ -50,7 +64,7 @@ export default function ProductSearch({ onSelect }: { onSelect: (product: any) =
               key={item.id}
               onClick={() => {
                 onSelect(item);
-                setQuery(item.description);
+                setQuery(item.description); // Actualiza el input al seleccionar
                 setShowDropdown(false);
               }}
               className="px-3 py-2 hover:bg-blue-100 cursor-pointer"

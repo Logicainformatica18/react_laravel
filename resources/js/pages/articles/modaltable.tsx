@@ -16,6 +16,7 @@ export default function ArticleListTable({ articles, onDelete, onSubmit }: {
               <tr>
                 <th className="px-4 py-2 text-left text-black dark:text-white">Artículo</th>
                 <th className="px-4 py-2 text-left text-black dark:text-white">Cantidad</th>
+                <th className="px-4 py-2 text-left text-black dark:text-white">Estado</th>
                 <th className="px-4 py-2 text-left text-black dark:text-white">Acciones</th>
               </tr>
             </thead>
@@ -24,6 +25,7 @@ export default function ArticleListTable({ articles, onDelete, onSubmit }: {
                 <tr key={index} className="border-t hover:bg-gray-50 dark:hover:bg-gray-700">
                   <td className="px-4 py-2 text-black dark:text-white">{article.description}</td>
                   <td className="px-4 py-2 text-black dark:text-white">{article.quanty}</td>
+                  <td className="px-4 py-2 text-black dark:text-white">{article.state}</td>
                   <td className="px-4 py-2">
                     <Button
                       variant="destructive"
