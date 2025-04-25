@@ -58,13 +58,11 @@ export default function Articles() {
   const [editArticle, setEditArticle] = useState<Article | null>(null);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-  const handleArticleSaved = (saved: Article) => {
-    setArticles((prev) => {
-      const exists = prev.find((a) => a.id === saved.id);
-      return exists ? prev.map((a) => (a.id === saved.id ? saved : a)) : [saved, ...prev];
-    });
+  const handleArticleSaved = () => {
+    fetchPage(`/articles/fetch?page=${pagination.current_page}${transfer_id ? `&transfer_id=${transfer_id}` : ''}`);
     setEditArticle(null);
   };
+  
 
   const fetchArticle = async (id: number) => {
     const res = await axios.get(`/articles/${id}`);

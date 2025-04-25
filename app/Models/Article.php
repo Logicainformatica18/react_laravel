@@ -16,5 +16,11 @@ class Article extends Model
         'file_2',
         'file_3',
         'file_4',
+        'transfer_id',
+        'product_id',
+        'code',
+        'condition',
+        'state',
+        
     ];
 }

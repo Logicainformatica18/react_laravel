@@ -37,6 +37,7 @@ class ArticleController extends Controller
             'condition' => 'nullable|string|max:50',
             'state' => 'nullable|string|max:50',
             'transfer_id' => 'required|exists:transfers,id',
+            'product_id' => 'required|exists:products,id',
 
             'file_1' => 'nullable|file|max:2048',
             'file_2' => 'nullable|file|max:2048',
@@ -54,6 +55,7 @@ class ArticleController extends Controller
         $article->condition = $request->condition;
         $article->state = $request->state;
         $article->transfer_id = $request->transfer_id;
+        $article->product_id = $request->product_id;
 
         foreach (['file_1', 'file_2', 'file_3', 'file_4'] as $field) {
             if ($request->hasFile($field)) {
@@ -68,8 +70,40 @@ class ArticleController extends Controller
             'article' => $article,
         ]);
     }
-
-
+    public function bulkStore(Request $request)
+    {
+        $request->validate([
+            'transfer_id' => 'required|exists:transfers,id',
+            'articles' => 'required|array|min:1',
+            'articles.*.description' => 'required|string|max:255',
+            'articles.*.quanty' => 'required|integer|min:1',
+            'articles.*.product_id' => 'required|exists:products,id',
+            'articles.*.title' => 'nullable|string|max:255',
+            'articles.*.details' => 'nullable|string',
+            'articles.*.price' => 'nullable|numeric|min:0',
+            'articles.*.code' => 'nullable|string|max:50',
+            'articles.*.condition' => 'nullable|string|max:50',
+            'articles.*.state' => 'nullable|string|max:50',
+        ]);
+    
+        foreach ($request->articles as $articleData) {
+            Article::create([
+                'title' => $articleData['title'] ?? $articleData['description'],
+                'description' => $articleData['description'],
+                'details' => $articleData['details'] ?? null,
+                'quanty' => $articleData['quanty'],
+                'price' => $articleData['price'] ?? 0,
+                'code' => $articleData['code'] ?? '',
+                'condition' => $articleData['condition'] ?? '',
+                'state' => $articleData['state'] ?? '',
+                'transfer_id' => $request->transfer_id,
+                'product_id' => $articleData['product_id'],
+            ]);
+        }
+    
+        return response()->json(['message' => '✅ Artículos guardados correctamente']);
+    }
+    
 
     public function update(Request $request, $id)
     {
@@ -82,16 +116,18 @@ class ArticleController extends Controller
             'code' => 'nullable|string|max:50',
             'condition' => 'nullable|string|max:50',
             'state' => 'nullable|string|max:50',
-
+            'product_id' => 'required|exists:products,id', // ✅ validación agregada
+    
             'file_1' => 'nullable|file|max:2048',
             'file_2' => 'nullable|file|max:2048',
             'file_3' => 'nullable|file|max:2048',
             'file_4' => 'nullable|file|max:2048',
         ]);
-
+    
         $article = Article::findOrFail($id);
+    
         $article->fill($request->except('file_1', 'file_2', 'file_3', 'file_4'));
-
+    
         foreach (['file_1', 'file_2', 'file_3', 'file_4'] as $field) {
             if ($request->hasFile($field)) {
                 Log::debug("📂 Procesando {$field}", [
@@ -99,7 +135,7 @@ class ArticleController extends Controller
                     'size' => $request->file($field)->getSize(),
                     'type' => $request->file($field)->getMimeType(),
                 ]);
-
+    
                 $article->$field = fileUpdate(
                     $request->file($field),
                     'uploads',
@@ -109,14 +145,14 @@ class ArticleController extends Controller
                 Log::debug("⚠️ No se recibió {$field}");
             }
         }
-
+    
         $article->save();
-
+    
         Log::info("✅ Artículo actualizado", ['id' => $article->id]);
-
+    
         return response()->json(['article' => $article], 200);
     }
-
+    
 
 
     public function show($id)

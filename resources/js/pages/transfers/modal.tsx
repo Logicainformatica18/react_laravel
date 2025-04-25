@@ -52,7 +52,7 @@ export default function TransferModal({
           setNotifying(false);
         }
       };
-      
+
     useEffect(() => {
         if (transferToEdit) {
             setFormData({
@@ -167,9 +167,20 @@ export default function TransferModal({
                         'receiver_email'
                     ].map((field) => (
                         <div key={field} className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor={field} className="text-right capitalize">
-                                {field.replace(/_/g, ' ')}
-                            </Label>
+                         <Label htmlFor={field} className="text-right">
+  {{
+    description: 'Descripción',
+    details: 'Detalles',
+    sender_firstname: 'Nombre del remitente',
+    sender_lastname: 'Apellido del remitente',
+    sender_email: 'Correo del remitente',
+    receiver_firstname: 'Nombre del receptor',
+    receiver_lastname: 'Apellido del receptor',
+    receiver_email: 'Correo del receptor',
+    file_1: 'Archivo'
+  }[field] || field}
+</Label>
+
                             {field === 'details' ? (
                                 <textarea
                                     id={field}
@@ -247,7 +258,7 @@ export default function TransferModal({
                         Cerrar
                     </Button>
 
-                   
+
 
                 </DialogFooter>
             </DialogContent>

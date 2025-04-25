@@ -1,6 +1,7 @@
 <?php
     use App\Http\Controllers\TransferController;
     use App\Http\Controllers\UserController;
+    use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ArticleController;
@@ -35,6 +36,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/articles/{id}', [ArticleController::class, 'show']);
     Route::post('/articles/bulk-delete', [ArticleController::class, 'bulkDelete']);
     Route::get('/articles/{id}/export-excel', [ArticleController::class, 'exportExcel']);
+
+
+
+   
+    Route::get('/products/search', [ProductController::class, 'searchByDescription']);
+        
+    Route::get('/products/fetch', [ProductController::class, 'fetchPaginated'])->name('products.fetch');
+    Route::post('/products', [ProductController::class, 'store'])->middleware(['auth', 'verified']);
+    Route::get('/products', [ProductController::class, 'index'])->middleware(['auth', 'verified'])->name('products.index');
+    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+    Route::put('/products/{id}', [ProductController::class, 'update']);
+    Route::get('/products/{id}', [ProductController::class, 'show']);
+    Route::post('/products/bulk-delete', [ProductController::class, 'bulkDelete']);
+    Route::get('/products/{id}/export-excel', [ProductController::class, 'exportExcel']);
+   
+    Route::post('/articles/bulk-store', [ArticleController::class, 'bulkStore']);
+
+  
+
+
+
+
+
+
+
+
 
     Route::get('/transfers/{id}/articles', [TransferController::class, 'articles'])->name('transfers.articles');
 

@@ -57,7 +57,7 @@ export default function UserModal({
         datebirth: userToEdit.datebirth || '',
         role: userToEdit.roles?.[0]?.name || '',
       });
-      if (userToEdit.photo) setPreview(`/uploads/${userToEdit.photo}`);
+      if (userToEdit.photo) setPreview(`/imageusers/${userToEdit.photo}`);
     } else {
       handleReset();
     }

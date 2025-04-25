@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->longText('details')->nullable();
             $table->integer('quanty')->default(0);
-            $table->decimal('price', 10, 2)->default(0);
+            $table->decimal('price', 10, 2)->nullable(); // Precio de compra o referencia
 
             // Nuevas columnas
             $table->string('code')->nullable(); // Código de inventario
@@ -28,6 +28,9 @@ return new class extends Migration
             $table->string('state')->nullable();
             $table->bigInteger('transfer_id')->unsigned();
             $table->foreign('transfer_id')->references('id')->on('transfers')->onDelete('cascade');
+
+            $table->bigInteger('product_id')->unsigned();
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
 
 
             $table->string('file_1')->nullable();
