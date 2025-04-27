@@ -38,11 +38,22 @@ export default function ArticleListTable({
                     return (
                       <td key={field} className="px-4 py-2 text-black dark:text-white">
                         {file ? (
-                          <img
-                            src={URL.createObjectURL(file)}
-                            alt="Imagen"
-                            className="w-12 h-12 object-cover rounded"
-                          />
+                          file instanceof File ? (
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt="Imagen"
+                              className="w-12 h-12 object-cover rounded"
+                            />
+                          ) : (
+                            <a
+                              href={`/uploads/${file}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline text-xs"
+                            >
+                              Ver archivo
+                            </a>
+                          )
                         ) : (
                           <span className="text-xs text-gray-400">Sin imagen</span>
                         )}

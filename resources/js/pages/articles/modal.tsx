@@ -53,10 +53,43 @@ export default function ArticleModal({
 
   useEffect(() => {
     if (articleToEdit) {
-      setArticles([{ ...articleToEdit }]);
-    } else {
-      setArticles([]);
-    }
+        setArticles([{ ...articleToEdit }]);
+        setFormData({
+          title: articleToEdit.title || '',
+          description: articleToEdit.description || '',
+          details: articleToEdit.details || '',
+          quanty: articleToEdit.quanty || 1,
+          price: articleToEdit.price || 0,
+          code: articleToEdit.code || '',
+          condition: articleToEdit.condition || '',
+          state: articleToEdit.state || '',
+          product_id: articleToEdit.product_id || null,
+          file_1: null, // Aquí ya no cargas archivo
+          file_2: null,
+          file_3: null,
+          file_4: null,
+
+        });
+        setProductSearchQuery(articleToEdit.description || ''); // 👈 Aquí agregas esto
+      } else {
+        setArticles([]);
+        setFormData({
+          title: '',
+          description: '',
+          details: '',
+          quanty: 1,
+          price: 0,
+          code: '',
+          condition: '',
+          state: '',
+          product_id: null,
+          file_1: null,
+          file_2: null,
+          file_3: null,
+          file_4: null,
+        });
+      }
+
   }, [articleToEdit]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
