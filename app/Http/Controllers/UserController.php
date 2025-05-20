@@ -11,16 +11,24 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        $users = User::with('roles')->orderBy('id', 'desc')->paginate(10);
-        $roles = Role::all();
+ public function index(Request $request)
+{
+    $users = User::with('roles')->orderBy('id', 'desc')->paginate(10);
+    $roles = Role::all();
 
-        return Inertia::render('users/index', [
+    if ($request->wantsJson()) {
+        return response()->json([
             'users' => $users,
             'roles' => $roles,
         ]);
     }
+
+    return Inertia::render('users/index', [
+        'users' => $users,
+        'roles' => $roles,
+    ]);
+}
+
 
     public function syncRoles(Request $request, $id)
     {
