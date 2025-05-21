@@ -39,9 +39,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 
-   
+
     Route::get('/products/search', [ProductController::class, 'searchByDescription']);
-        
+
     Route::get('/products/fetch', [ProductController::class, 'fetchPaginated'])->name('products.fetch');
     Route::post('/products', [ProductController::class, 'store'])->middleware(['auth', 'verified']);
     Route::get('/products', [ProductController::class, 'index'])->middleware(['auth', 'verified'])->name('products.index');
@@ -50,10 +50,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/products/{id}', [ProductController::class, 'show']);
     Route::post('/products/bulk-delete', [ProductController::class, 'bulkDelete']);
     Route::get('/products/{id}/export-excel', [ProductController::class, 'exportExcel']);
-   
+
     Route::post('/articles/bulk-store', [ArticleController::class, 'bulkStore']);
 
-  
+
 
 
 
@@ -77,7 +77,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/transfer-confirmation/{token}', [TransferController::class, 'confirm'])->name('transfer.confirm');
 
 
- //   Route::get('/transfers/export/excel', [TransferController::class, 'exportExcel']);
+
     Route::post('/transfers/{id}/notify', [TransferController::class, 'notify']);
 
 
