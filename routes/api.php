@@ -6,9 +6,11 @@ use App\Http\Controllers\TransferController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\RoleController;
+
 use App\Http\Controllers\PermissionController;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+
 
 // Login API
 Route::post('/login', function (Request $request) {
@@ -64,6 +66,12 @@ Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
 
 
 
+Route::get('/products/fetch', [ProductController::class, 'fetchPaginated'])->name('products.fetch');
+Route::get('/products', [ProductController::class, 'index']);
+Route::post('/products', [ProductController::class, 'store']);
+Route::get('/products/{id}', [ProductController::class, 'show']);
+Route::put('/products/{id}', [ProductController::class, 'update']);
+Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
 
 

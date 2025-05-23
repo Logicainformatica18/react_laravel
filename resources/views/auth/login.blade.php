@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Favicon icon-->
-  <link rel="icon" type="image/jpg" href="{{ asset('ayba/favicon.png') }}" />
+  <link rel="icon" type="image/jpg" href="{{ asset('logo/favicon.png') }}" />
 
   <!-- Core Css -->
   <link rel="stylesheet" href="../assets/css/styles.css" />
@@ -20,7 +20,7 @@
   <!-- Preloader -->
   <div class="preloader">
 
-    <img src="{{ asset('ayba/1.png') }}" alt="loader" class="lds-ripple img-fluid" />
+    <img src="{{ asset('logo/1.png') }}" alt="loader" class="lds-ripple img-fluid" />
   </div>
   <div id="main-wrapper">
     <div class="position-relative overflow-hidden radial-gradient min-vh-100 w-100">
@@ -31,7 +31,7 @@
             <div class="min-vh-100 bg-body row justify-content-center align-items-center p-5">
               <div class="col-12 auth-card">
                 <a href="{{url('/')}}" class="text-nowrap logo-img d-block w-100 text-center">
-                  <img src="{{asset('ayba/1.png')}}" class="dark-logo" alt="Logo-Dark" width="40%" />
+                  <img src="{{asset('logo/1.png')}}" class="dark-logo" alt="Logo-Dark" width="40%" />
 
                 </a>
                 <h2 class="mb-2 mt-4 fs-7 fw-bolder">Iniciar Sesión</h2>
@@ -124,7 +124,7 @@
 
           <div class="col-lg-6 col-xl-7 col-xxl-8 position-relative overflow-hidden   d-none d-md-block">
             {{-- <div class="circle-top"></div> --}}
-            <img src="ayba/f_login.png" height="100%" alt="">
+            <img src="logo/f_login.png" height="100%" alt="">
             <div>
 
               {{-- <img src="../assets/images/logos/logo-icon.svg" class="circle-bottom" alt="Logo-Dark" /> --}}

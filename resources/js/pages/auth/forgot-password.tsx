@@ -24,7 +24,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
             <div className="flex items-center justify-center bg-white p-8">
                 <div className="w-full max-w-md">
                     <div className="flex justify-center mb-4">
-                        <img src="/ayba/1.png" alt="Logo" className="w-16" />
+                        <img src="/logo/1.png" alt="Logo" className="w-16" />
                     </div>
 
                     <h2 className="text-center text-xl font-bold mb-4">Recuperar contraseña</h2>

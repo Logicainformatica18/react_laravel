@@ -38,12 +38,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     return (
         <div
         className="min-h-screen flex items-center justify-center bg-cover bg-center"
-        style={{ backgroundImage: "url('/ayba/f_login.png')" }}
+        style={{ backgroundImage: "url('/logo/f_login.png')" }}
       >
 
             <div className="bg-white shadow-md rounded-xl p-10 w-full max-w-md">
                 <div className="flex justify-center mb-4">
-                    <img src="../../ayba/1.png" alt="Logo" className="w-32" />
+                    <img src="../../logo/1.png" alt="Logo" className="w-32" />
                 </div>
 
                 <h2 className="text-center text-xl font-bold mb-4 text-black">Iniciar Sesión</h2>

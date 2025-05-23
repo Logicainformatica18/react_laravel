@@ -21,30 +21,12 @@ class ProductController extends Controller
 
     public function fetchPaginated()
     {
-        $products = Product::latest()->orderBy('id', 'desc')->paginate(7);
-
-        return response()->json([
-            'products' => $products,
-        ]);
+        return response()->json(Product::latest()->orderBy('id', 'desc')->paginate(7));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'code' => 'required|string|max:50|unique:products,code',
-            'sku' => 'required|string|max:50|unique:products,sku',
-            'description' => 'required|string|max:255',
-            'detail' => 'nullable|string',
-            'brand' => 'nullable|string|max:100',
-            'model' => 'nullable|string|max:100',
-            'serial_number' => 'nullable|string|max:100',
-            'condition' => 'nullable|string|max:50',
-            'state' => 'nullable|string|max:50',
-            'quantity' => 'nullable|integer|min:0',
-            'price' => 'nullable|numeric|min:0',
-            'location' => 'nullable|string|max:100',
-            'file_1' => 'nullable|file|max:2048',
-        ]);
+        $this->validateProduct($request);
 
         $product = new Product();
         $product->fill($request->except('file_1'));
@@ -64,22 +46,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
-
-        $request->validate([
-            'code' => "required|string|max:50|unique:products,code,{$id}",
-            'sku' => "required|string|max:50|unique:products,sku,{$id}",
-            'description' => 'required|string|max:255',
-            'detail' => 'nullable|string',
-            'brand' => 'nullable|string|max:100',
-            'model' => 'nullable|string|max:100',
-            'serial_number' => 'nullable|string|max:100',
-            'condition' => 'nullable|string|max:50',
-            'state' => 'nullable|string|max:50',
-            'quantity' => 'nullable|integer|min:0',
-            'price' => 'nullable|numeric|min:0',
-            'location' => 'nullable|string|max:100',
-            'file_1' => 'nullable|file|max:2048',
-        ]);
+        $this->validateProduct($request, $id);
 
         $product->fill($request->except('file_1'));
 
@@ -119,15 +86,34 @@ class ProductController extends Controller
     {
         return Excel::download(new ProductsExport($id), "productos_transferencia_{$id}.xlsx");
     }
+
     public function searchByDescription(Request $request)
-{
-    $term = $request->input('q');
+    {
+        $term = $request->input('q');
 
-    $products = Product::where('description', 'like', '%' . $term . '%')
-        ->limit(10)
-        ->get(['id', 'description']);
+        $products = Product::where('description', 'like', '%' . $term . '%')
+            ->limit(10)
+            ->get(['id', 'description']);
 
-    return response()->json($products);
-}
+        return response()->json($products);
+    }
 
+    private function validateProduct(Request $request, $id = null)
+    {
+        $request->validate([
+            'code' => "required|string|max:50|unique:products,code,{$id}",
+            'sku' => "required|string|max:50|unique:products,sku,{$id}",
+            'description' => 'required|string|max:255',
+            'detail' => 'nullable|string',
+            'brand' => 'nullable|string|max:100',
+            'model' => 'nullable|string|max:100',
+            'serial_number' => 'nullable|string|max:100',
+            'condition' => 'nullable|string|max:50',
+            'state' => 'nullable|string|max:50',
+            'quantity' => 'nullable|integer|min:0',
+            'price' => 'nullable|numeric|min:0',
+            'location' => 'nullable|string|max:100',
+            'file_1' => 'nullable|file|max:2048',
+        ]);
+    }
 }
