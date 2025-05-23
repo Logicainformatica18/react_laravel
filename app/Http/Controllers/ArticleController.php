@@ -10,21 +10,40 @@ use Illuminate\Support\Facades\Log;
 class ArticleController extends Controller
 {
 
-    public function index()
-    {
-        $articles = Article::latest()->orderBy('id','desc')->paginate(7);
-        return Inertia::render('articles/index', [
-            'articles' => $articles,
-        ]);
-    }
-    public function fetchPaginated()
-    {
-        $articles = Article::latest()->orderBy('id','desc')->paginate(7);
+  public function index(Request $request)
+{
+    $articles = Article::latest()->orderBy('id','desc')->paginate(7);
 
+    if ($request->wantsJson()) {
         return response()->json([
-            'articles' => $articles,
+            'data' => $articles->items(),
+            'current_page' => $articles->currentPage(),
+            'last_page' => $articles->lastPage(),
         ]);
     }
+
+    return Inertia::render('articles/index', [
+        'articles' => $articles,
+    ]);
+}
+
+ public function fetchPaginated(Request $request)
+{
+    $query = Article::query();
+
+    if ($request->has('transfer_id')) {
+        $query->where('transfer_id', $request->transfer_id);
+    }
+
+    $articles = $query->latest()->orderByDesc('id')->paginate($request->input('per_page', 7));
+
+    return response()->json([
+        'data' => $articles->items(),
+        'current_page' => $articles->currentPage(),
+        'last_page' => $articles->lastPage(),
+    ]);
+}
+
     public function store(Request $request)
     {
         $request->validate([

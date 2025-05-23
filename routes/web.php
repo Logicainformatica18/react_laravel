@@ -5,6 +5,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ArticleController;
+ 
 Route::get('/', function () {
     return redirect("dashboard");
     //return Inertia::render('welcome');
@@ -80,6 +81,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/transfers/{id}/notify', [TransferController::class, 'notify']);
 
+
+
+
+ 
 
 
 });

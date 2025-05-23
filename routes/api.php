@@ -74,7 +74,14 @@ Route::put('/products/{id}', [ProductController::class, 'update']);
 Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
 
-
+Route::get('/articles/fetch', [ArticleController::class, 'fetchPaginated']); // ?transfer_id=ID&page=X
+Route::get('/articles/{id}', [ArticleController::class, 'show']);
+Route::post('/articles', [ArticleController::class, 'store']);
+Route::post('/articles/{id}', [ArticleController::class, 'update']); // método POST + _method=PUT
+Route::delete('/articles/{id}', [ArticleController::class, 'destroy']);
+Route::post('/articles/bulk-delete', [ArticleController::class, 'bulkDelete']);
+Route::post('/articles/bulk-store', [ArticleController::class, 'bulkStore']);
+Route::get('/articles/export/{transfer_id}', [ArticleController::class, 'exportExcel']);
 
 
     });
