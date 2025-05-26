@@ -64,7 +64,7 @@ Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     Route::put('/transfers/{id}', [TransferController::class, 'update']);
     Route::delete('/transfers/{id}', [TransferController::class, 'destroy']);
 
-
+ Route::get('/products/search', [ProductController::class, 'searchByDescription']);
 
 Route::get('/products/fetch', [ProductController::class, 'fetchPaginated'])->name('products.fetch');
 Route::get('/products', [ProductController::class, 'index']);
@@ -93,3 +93,4 @@ Route::get('/test', function () {
         'timestamp' => now(),
     ]);
 });
+
