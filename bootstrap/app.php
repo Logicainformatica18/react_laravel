@@ -39,6 +39,13 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // Manejo de errores si lo necesitas
-    })
+    $exceptions->renderable(function (Throwable $e, $request) {
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    });
+})
+
     ->create();
